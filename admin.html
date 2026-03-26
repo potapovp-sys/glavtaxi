@@ -449,10 +449,6 @@
         </div>
       </div>
 
-      <div class="config-notice" id="configNotice">
-        ⚠️ Firebase не настроен — вставьте конфигурацию в начало файла (строки с firebaseConfig)
-      </div>
-
       <!-- STATS -->
       <div class="stats-row">
         <div class="stat-card s-new">
@@ -537,103 +533,83 @@
   import { initializeApp }            from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
   import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
                                        from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-  import { getFirestore, collection, query, orderBy, getDocs, doc, updateDoc, arrayUnion, Timestamp }
+  import { getFirestore, collection, query, orderBy, getDocs, doc, updateDoc, arrayUnion }
                                        from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-  // ═══════════════════════════════════════════════════
-  //  НАСТРОЙКИ FIREBASE — вставьте свои ключи
-  //  console.firebase.google.com → ваш проект →
-  //  Настройки проекта → Веб-приложение → firebaseConfig
-  // ═══════════════════════════════════════════════════
   const firebaseConfig = {
-    apiKey: "AIzaSyDK5X7SVtEKkhsJh5Qf-DlU-uUK4msvMaw",
-    authDomain: "glavtaxi-crm.firebaseapp.com",
-    projectId: "glavtaxi-crm",
-    storageBucket: "glavtaxi-crm.firebasestorage.app",
+    apiKey:            "AIzaSyDK5X7SVtEKkhsJh5Qf-DlU-uUK4msvMaw",
+    authDomain:        "glavtaxi-crm.firebaseapp.com",
+    projectId:         "glavtaxi-crm",
+    storageBucket:     "glavtaxi-crm.firebasestorage.app",
     messagingSenderId: "1093660324372",
-    appId: "1:1093660324372:web:bf29ae013ed99aa2d7ad01"
+    appId:             "1:1093660324372:web:bf29ae013ed99aa2d7ad01"
   };
-  // ═══════════════════════════════════════════════════
 
-  const CONFIGURED = firebaseConfig.apiKey !== 'ВСТАВЬТЕ_apiKey';
-
-  let app, auth, db;
-  if(CONFIGURED){
-    app  = initializeApp(firebaseConfig);
-    auth = getAuth(app);
-    db   = getFirestore(app);
-  }
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
 
   // ── STATE ──
-  let allLeads   = [];
+  let allLeads      = [];
   let currentFilter = 'all';
   let currentLeadId = null;
 
-  // ── AUTH ──
+  // ── AUTH — реальная проверка Firebase ──
   window.doLogin = async function() {
-    if(!CONFIGURED){
-      // Dev mode — demo login
-      document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('app').style.display = 'block';
-      document.getElementById('configNotice').classList.add('show');
-      loadDemoLeads();
-      return;
-    }
     const email = document.getElementById('loginEmail').value.trim();
     const pass  = document.getElementById('loginPass').value;
+    const errEl = document.getElementById('loginErr');
+    errEl.style.display = 'none';
+    if(!email || !pass){ errEl.textContent = 'Введите email и пароль'; errEl.style.display = 'block'; return; }
     try {
       await signInWithEmailAndPassword(auth, email, pass);
     } catch(e) {
-      document.getElementById('loginErr').style.display = 'block';
+      errEl.textContent = 'Неверный email или пароль';
+      errEl.style.display = 'block';
     }
   };
 
   window.doLogout = async function() {
-    if(CONFIGURED) await signOut(auth);
-    location.reload();
+    await signOut(auth);
   };
 
-  if(CONFIGURED){
-    onAuthStateChanged(auth, user => {
-      if(user){
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('app').style.display = 'block';
-        loadLeads();
-      }
-    });
-  }
+  // Следим за состоянием авторизации
+  onAuthStateChanged(auth, user => {
+    if(user){
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      loadLeads();
+    } else {
+      document.getElementById('loginScreen').style.display = 'flex';
+      document.getElementById('app').style.display = 'none';
+    }
+  });
 
   // ── LOAD LEADS ──
   window.loadLeads = async function() {
-    if(!CONFIGURED){ loadDemoLeads(); return; }
     document.getElementById('leadsBody').innerHTML =
       '<tr class="loading-row"><td colspan="7"><span class="spinner"></span>Загружаем...</td></tr>';
-    const q = query(collection(db, 'leads'), orderBy('createdAt', 'desc'));
-    const snap = await getDocs(q);
-    allLeads = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    updateStats();
-    renderLeads();
+    try {
+      const q = query(collection(db, 'leads'), orderBy('createdAt', 'desc'));
+      const snap = await getDocs(q);
+      allLeads = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      updateStats();
+      renderLeads();
+    } catch(e) {
+      document.getElementById('leadsBody').innerHTML =
+        '<tr><td colspan="7" style="text-align:center;padding:40px;color:#FF5C5C">Ошибка загрузки: ' + e.message + '</td></tr>';
+    }
   };
-
-  function loadDemoLeads(){
-    allLeads = [
-      { id:'demo1', name:'Иван Петров', phone:'+7 999 123-45-67', company:'ТаксиМосква', cars:'42 авто', biz:'Таксопарк', brands:'Kia, Hyundai', priority:'ТО по регламенту', source:'Квиз', status:'new', createdAt:{ seconds: Date.now()/1000 - 3600 }, comments:[] },
-      { id:'demo2', name:'Сергей Волков', phone:'+7 916 987-65-43', company:'GetCar', cars:'18 авто', biz:'Каршеринг', brands:'Volkswagen, Skoda', priority:'Кузовной ремонт', source:'CTA-форма', status:'progress', createdAt:{ seconds: Date.now()/1000 - 86400 }, comments:[{author:'Менеджер', text:'Договорились на встречу в пятницу', time:'2024-01-15 14:30'}] },
-      { id:'demo3', name:'Алексей Сидоров', phone:'+7 903 555-12-34', company:'АвтоПрокат24', cars:'7 авто', biz:'Прокатная компания', brands:'Lada, Renault', priority:'Диагностика', source:'Квиз', status:'done', createdAt:{ seconds: Date.now()/1000 - 172800 }, comments:[] },
-    ];
-    updateStats();
-    renderLeads();
-  }
 
   function updateStats(){
     const n = allLeads.filter(l=>l.status==='new').length;
     const p = allLeads.filter(l=>l.status==='progress').length;
     const d = allLeads.filter(l=>l.status==='done').length;
-    document.getElementById('stNew').textContent = n;
+    document.getElementById('stNew').textContent      = n;
     document.getElementById('stProgress').textContent = p;
-    document.getElementById('stDone').textContent = d;
-    document.getElementById('stAll').textContent = allLeads.length;
-    document.getElementById('newCount').textContent = n;
+    document.getElementById('stDone').textContent     = d;
+    document.getElementById('stAll').textContent      = allLeads.length;
+    document.getElementById('newCount').textContent   = n;
   }
 
   window.renderLeads = function(){
@@ -649,13 +625,13 @@
 
     const tbody = document.getElementById('leadsBody');
     if(!filtered.length){
-      tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">📭</div><div class="empty-title">Заявок нет</div><div class="empty-text">Измените фильтр или дождитесь новых</div></div></td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">📭</div><div class="empty-title">Заявок нет</div><div class="empty-text">Измените фильтр или дождитесь новых заявок</div></div></td></tr>';
       return;
     }
 
     tbody.innerHTML = filtered.map(l => {
       const date = l.createdAt?.seconds
-        ? new Date(l.createdAt.seconds*1000).toLocaleString('ru', {day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'})
+        ? new Date(l.createdAt.seconds*1000).toLocaleString('ru',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'})
         : '—';
       const statusMap = { new:'Новая', progress:'В работе', done:'Завершена', rejected:'Отклонена' };
       const commentCount = (l.comments||[]).length;
@@ -690,7 +666,6 @@
     }).join('');
   };
 
-  // ── FILTER ──
   window.setFilter = function(f, btn){
     currentFilter = f;
     document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
@@ -698,7 +673,6 @@
     renderLeads();
   };
 
-  // ── STATUS ──
   window.toggleStatusDrop = function(e, id){
     e.stopPropagation();
     document.querySelectorAll('.status-dropdown').forEach(d=>{ if(d.id!=='drop-'+id) d.classList.remove('open'); });
@@ -711,15 +685,12 @@
     const lead = allLeads.find(l=>l.id===id);
     if(!lead) return;
     lead.status = status;
-    if(CONFIGURED){
-      await updateDoc(doc(db,'leads',id), { status });
-    }
+    try { await updateDoc(doc(db,'leads',id), { status }); } catch(e){ console.error(e); }
     updateStats();
     renderLeads();
     if(currentLeadId===id) openPanel(id);
   };
 
-  // ── PANEL ──
   window.openPanel = function(id){
     currentLeadId = id;
     const l = allLeads.find(x=>x.id===id);
@@ -730,7 +701,6 @@
 
     document.getElementById('panelName').textContent  = l.name||'—';
     document.getElementById('panelPhone').textContent = l.phone||'—';
-
     document.getElementById('panelInfo').innerHTML = `
       <div class="info-item"><label>Компания</label><span>${l.company||'—'}</span></div>
       <div class="info-item"><label>Источник</label><span>${l.source||'—'}</span></div>
@@ -756,7 +726,6 @@
       `).join('');
       pc.scrollTop = pc.scrollHeight;
     }
-
     document.getElementById('commentInput').value = '';
     document.getElementById('panelOverlay').classList.add('open');
   };
@@ -770,59 +739,47 @@
     if(e.target===document.getElementById('panelOverlay')) closePanel();
   };
 
-  // ── ADD COMMENT ──
   window.addComment = async function(){
     const text = document.getElementById('commentInput').value.trim();
     if(!text || !currentLeadId) return;
-
     const now = new Date().toLocaleString('ru',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'});
     const comment = { author:'Менеджер', text, time: now };
-
     const lead = allLeads.find(l=>l.id===currentLeadId);
     if(!lead.comments) lead.comments = [];
     lead.comments.push(comment);
-
-    if(CONFIGURED){
-      await updateDoc(doc(db,'leads',currentLeadId), {
-        comments: arrayUnion(comment)
-      });
-    }
-
+    try {
+      await updateDoc(doc(db,'leads',currentLeadId), { comments: arrayUnion(comment) });
+    } catch(e){ console.error(e); }
     document.getElementById('commentInput').value = '';
     openPanel(currentLeadId);
     renderLeads();
   };
 
-  // ── VIEW SWITCH ──
   window.showView = function(view){
     document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
     event.currentTarget.classList.add('active');
-    document.getElementById('viewLeads').style.display  = view==='leads'  ? 'block' : 'none';
-    document.getElementById('viewStats').style.display  = view==='stats'  ? 'block' : 'none';
+    document.getElementById('viewLeads').style.display = view==='leads' ? 'block' : 'none';
+    document.getElementById('viewStats').style.display = view==='stats' ? 'block' : 'none';
     if(view==='stats') renderStats();
   };
 
   function renderStats(){
-    const bySource = {};
-    const byBiz    = {};
+    const bySource = {}, byBiz = {};
     allLeads.forEach(l=>{
       bySource[l.source||'—'] = (bySource[l.source||'—']||0)+1;
       byBiz[l.biz||'—']       = (byBiz[l.biz||'—']||0)+1;
     });
     const src = Object.entries(bySource).sort((a,b)=>b[1]-a[1]);
     const biz = Object.entries(byBiz).sort((a,b)=>b[1]-a[1]);
-
     document.getElementById('statsContent').innerHTML = `
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:700px">
         <div style="background:var(--card);border:1px solid var(--border);border-radius:4px;padding:24px">
           <div style="font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;margin-bottom:16px;color:#fff">По источнику</div>
-          ${src.map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">
-            <span>${k}</span><span style="font-family:'JetBrains Mono',monospace;color:var(--y)">${v}</span></div>`).join('')}
+          ${src.map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span>${k}</span><span style="font-family:'JetBrains Mono',monospace;color:var(--y)">${v}</span></div>`).join('')}
         </div>
         <div style="background:var(--card);border:1px solid var(--border);border-radius:4px;padding:24px">
           <div style="font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;margin-bottom:16px;color:#fff">По типу бизнеса</div>
-          ${biz.map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">
-            <span>${k}</span><span style="font-family:'JetBrains Mono',monospace;color:var(--y)">${v}</span></div>`).join('')}
+          ${biz.map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span>${k}</span><span style="font-family:'JetBrains Mono',monospace;color:var(--y)">${v}</span></div>`).join('')}
         </div>
       </div>`;
   }

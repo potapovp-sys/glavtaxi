@@ -5,34 +5,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Firebase -->
 <script type="module">
-  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-  import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+  import { initializeApp }    from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+  import { getFirestore, collection, addDoc, serverTimestamp }
+                               from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-  // ═══════════════════════════════════════════════════
-  //  НАСТРОЙКИ FIREBASE — вставьте свои ключи
-  //  console.firebase.google.com → ваш проект →
-  //  Настройки проекта → Веб-приложение → firebaseConfig
-  // ═══════════════════════════════════════════════════
   const firebaseConfig = {
-    apiKey: "AIzaSyDK5X7SVtEKkhsJh5Qf-DlU-uUK4msvMaw",
-    authDomain: "glavtaxi-crm.firebaseapp.com",
-    projectId: "glavtaxi-crm",
-    storageBucket: "glavtaxi-crm.firebasestorage.app",
+    apiKey:            "AIzaSyDK5X7SVtEKkhsJh5Qf-DlU-uUK4msvMaw",
+    authDomain:        "glavtaxi-crm.firebaseapp.com",
+    projectId:         "glavtaxi-crm",
+    storageBucket:     "glavtaxi-crm.firebasestorage.app",
     messagingSenderId: "1093660324372",
-    appId: "1:1093660324372:web:bf29ae013ed99aa2d7ad01"
+    appId:             "1:1093660324372:web:bf29ae013ed99aa2d7ad01"
   };
-  // ═══════════════════════════════════════════════════
 
   const app = initializeApp(firebaseConfig);
   const db  = getFirestore(app);
 
-  // Глобальная функция отправки заявки в Firestore
-  window.saveLeadToFirebase = async function(data) {
+  // Экспортируем в globalThis чтобы обычные скрипты могли вызывать
+  globalThis.saveLeadToFirebase = async function(data) {
     try {
       await addDoc(collection(db, 'leads'), {
         ...data,
         createdAt: serverTimestamp(),
-        status: 'new',
+        status:   'new',
         comments: []
       });
       return true;
@@ -2185,7 +2180,7 @@ function quizBack(step){
   quizSetProgress(step-1);
 }
 
-function submitCTA(){
+async function submitCTA(){
   var name    = document.getElementById('ctaName').value.trim();
   var phone   = document.getElementById('ctaPhone').value.trim();
   var company = document.getElementById('ctaCompany').value.trim();
@@ -2198,22 +2193,33 @@ function submitCTA(){
   btn.disabled = true;
 
   var data = {
-    source:  'CTA-форма',
-    name:    name    || '—',
-    phone:   phone,
-    company: company || '—',
-    cars:    cars    || '—',
-    brands:  '—',
-    biz:     '—',
-    priority:'—'
+    source:   'CTA-форма',
+    name:     name    || '—',
+    phone:    phone,
+    company:  company || '—',
+    cars:     cars    || '—',
+    brands:   '—',
+    biz:      '—',
+    priority: '—'
   };
 
-  if(typeof window.saveLeadToFirebase === 'function'){
-    window.saveLeadToFirebase(data).then(function(ok){
-      btn.textContent = ok ? '✓ Заявка принята!' : '✓ Заявка принята!';
+  // Ждём инициализации Firebase (модуль загружается асинхронно)
+  var attempts = 0;
+  while(typeof globalThis.saveLeadToFirebase !== 'function' && attempts < 20){
+    await new Promise(r => setTimeout(r, 200));
+    attempts++;
+  }
+
+  if(typeof globalThis.saveLeadToFirebase === 'function'){
+    var ok = await globalThis.saveLeadToFirebase(data);
+    btn.textContent = '✓ Заявка принята!';
+    // Очищаем форму
+    ['ctaName','ctaPhone','ctaCompany','ctaCars'].forEach(function(id){
+      var el = document.getElementById(id); if(el) el.value = '';
     });
   } else {
-    setTimeout(function(){ btn.textContent = '✓ Заявка принята!'; }, 500);
+    btn.textContent = '✓ Заявка принята!';
+    console.warn('Firebase не загрузился');
   }
 }
 
@@ -2243,9 +2249,19 @@ function quizSubmit(){
     priority:qLabels[qData.q4] || '—',
     message: 'Заявка из квиза'
   };
-  if(typeof window.saveLeadToFirebase === 'function'){
-    window.saveLeadToFirebase(params);
-  }
+  // Отправляем в Firebase
+  (async function(){
+    var attempts = 0;
+    while(typeof globalThis.saveLeadToFirebase !== 'function' && attempts < 20){
+      await new Promise(r => setTimeout(r, 200));
+      attempts++;
+    }
+    if(typeof globalThis.saveLeadToFirebase === 'function'){
+      globalThis.saveLeadToFirebase(params);
+    } else {
+      console.warn('Firebase не доступен при отправке квиза');
+    }
+  })();
 }
 </script>
 
