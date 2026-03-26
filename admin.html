@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ГлавТакси CRM — Заявки</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --y:    #F5C842;
+    --yd:   #D9A800;
+    --blk:  #0E0E0E;
+    --bg:   #141414;
+    --card: #1C1C1C;
+    --border: rgba(255,255,255,0.08);
+    --mut:  rgba(255,255,255,0.35);
+    --text: rgba(255,255,255,0.88);
+
+    --status-new:      #F5C842;
+    --status-progress: #4DA3FF;
+    --status-done:     #3DD68C;
+    --status-rejected: #FF5C5C;
+  }
+
+  html { font-size: 16px; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* ── LOGIN ── */
+  #loginScreen {
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh;
+    background: radial-gradient(ellipse 60% 60% at 50% 40%, rgba(245,200,66,0.08) 0%, transparent 70%);
+  }
+  .login-box {
+    width: 380px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 48px 40px;
+    text-align: center;
+  }
+  .login-logo {
+    font-family: 'Unbounded', sans-serif;
+    font-weight: 900; font-size: 20px;
+    color: var(--y);
+    margin-bottom: 4px;
+    letter-spacing: -0.5px;
+  }
+  .login-sub {
+    font-size: 11px; font-weight: 600; letter-spacing: 3px;
+    color: var(--mut); text-transform: uppercase; margin-bottom: 36px;
+  }
+  .login-title {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 16px; font-weight: 700; margin-bottom: 24px;
+    color: #fff;
+  }
+  .login-input {
+    width: 100%; background: rgba(255,255,255,0.05);
+    border: 1.5px solid var(--border); border-radius: 3px;
+    padding: 14px 16px; font-family: 'Inter', sans-serif;
+    font-size: 15px; color: #fff; outline: none;
+    transition: .2s; margin-bottom: 12px;
+  }
+  .login-input:focus { border-color: var(--y); background: rgba(255,255,255,0.07); }
+  .login-input::placeholder { color: rgba(255,255,255,0.25); }
+  .login-btn {
+    width: 100%; background: var(--y); color: var(--blk);
+    border: none; padding: 15px; font-family: 'Unbounded', sans-serif;
+    font-weight: 800; font-size: 13px; cursor: pointer; border-radius: 2px;
+    transition: .2s; margin-top: 4px;
+  }
+  .login-btn:hover { background: var(--yd); }
+  .login-err {
+    color: #FF5C5C; font-size: 13px; margin-top: 12px; display: none;
+  }
+
+  /* ── LAYOUT ── */
+  #app { display: none; min-height: 100vh; }
+
+  .sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0;
+    width: 220px;
+    background: var(--blk);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    z-index: 100;
+    padding: 0;
+  }
+  .sidebar-logo {
+    padding: 24px 24px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-logo-name {
+    font-family: 'Unbounded', sans-serif;
+    font-weight: 900; font-size: 14px; color: var(--y); letter-spacing: -0.3px;
+  }
+  .sidebar-logo-sub {
+    font-size: 9px; letter-spacing: 2.5px; color: var(--mut);
+    text-transform: uppercase; margin-top: 2px;
+  }
+  .sidebar-nav { padding: 16px 12px; flex: 1; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: 3px; cursor: pointer;
+    font-size: 13px; font-weight: 500; color: var(--mut);
+    transition: .15s; margin-bottom: 2px; user-select: none;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.04); color: #fff; }
+  .nav-item.active { background: rgba(245,200,66,0.1); color: var(--y); }
+  .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+  .nav-badge {
+    margin-left: auto; background: var(--y); color: var(--blk);
+    font-size: 10px; font-weight: 800; padding: 2px 7px;
+    border-radius: 10px; font-family: 'JetBrains Mono', monospace;
+  }
+  .sidebar-footer {
+    padding: 16px 12px;
+    border-top: 1px solid var(--border);
+    font-size: 12px; color: var(--mut);
+  }
+  .logout-btn {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 12px; border-radius: 3px; cursor: pointer;
+    font-size: 12px; color: var(--mut); transition: .15s;
+  }
+  .logout-btn:hover { color: #FF5C5C; }
+
+  .main {
+    margin-left: 220px;
+    padding: 32px 36px;
+    min-height: 100vh;
+  }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 28px;
+  }
+  .topbar-title {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 20px; font-weight: 900; color: #fff;
+  }
+  .topbar-actions { display: flex; align-items: center; gap: 12px; }
+  .btn-refresh {
+    background: rgba(255,255,255,0.06); border: 1px solid var(--border);
+    color: var(--mut); padding: 9px 16px; border-radius: 3px;
+    font-size: 13px; cursor: pointer; transition: .15s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .btn-refresh:hover { color: #fff; border-color: rgba(255,255,255,0.2); }
+
+  /* ── STATS BAR ── */
+  .stats-row {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 12px; margin-bottom: 28px;
+  }
+  .stat-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 4px; padding: 20px 22px;
+    position: relative; overflow: hidden;
+  }
+  .stat-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  }
+  .stat-card.s-new::before    { background: var(--status-new); }
+  .stat-card.s-progress::before { background: var(--status-progress); }
+  .stat-card.s-done::before   { background: var(--status-done); }
+  .stat-card.s-all::before    { background: var(--mut); }
+  .stat-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 36px; font-weight: 500; line-height: 1; color: #fff;
+    margin-bottom: 6px;
+  }
+  .stat-label { font-size: 12px; color: var(--mut); font-weight: 500; }
+
+  /* ── FILTERS ── */
+  .filters-row {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 20px; flex-wrap: wrap;
+  }
+  .filter-btn {
+    padding: 7px 16px; border-radius: 2px; font-size: 12px; font-weight: 600;
+    cursor: pointer; border: 1px solid var(--border);
+    background: transparent; color: var(--mut); transition: .15s;
+    letter-spacing: 0.3px;
+  }
+  .filter-btn:hover { border-color: rgba(255,255,255,0.2); color: #fff; }
+  .filter-btn.active { background: var(--y); border-color: var(--y); color: var(--blk); }
+  .search-input {
+    margin-left: auto; background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border); border-radius: 3px;
+    padding: 7px 14px; font-family: 'Inter', sans-serif;
+    font-size: 13px; color: #fff; outline: none; width: 220px; transition: .2s;
+  }
+  .search-input:focus { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.08); }
+  .search-input::placeholder { color: rgba(255,255,255,0.2); }
+
+  /* ── LEADS TABLE ── */
+  .leads-table { width: 100%; border-collapse: collapse; }
+  .leads-table th {
+    text-align: left; font-size: 10px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase; color: var(--mut);
+    padding: 0 16px 12px; border-bottom: 1px solid var(--border);
+  }
+  .leads-table td {
+    padding: 0; border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .lead-row {
+    cursor: pointer; transition: background .15s;
+  }
+  .lead-row:hover td { background: rgba(255,255,255,0.02); }
+  .lead-row.selected td { background: rgba(245,200,66,0.04); }
+  .td-inner { padding: 16px 16px; }
+
+  .lead-name { font-weight: 600; font-size: 14px; color: #fff; margin-bottom: 2px; }
+  .lead-company { font-size: 12px; color: var(--mut); }
+  .lead-phone {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; color: var(--y);
+  }
+  .lead-source {
+    font-size: 11px; color: var(--mut);
+    background: rgba(255,255,255,0.05);
+    padding: 3px 8px; border-radius: 2px; display: inline-block;
+  }
+  .lead-cars { font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+  .lead-date { font-size: 12px; color: var(--mut); }
+
+  /* STATUS BADGE */
+  .status-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 10px; border-radius: 2px; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.3px; cursor: pointer; transition: .15s;
+    position: relative;
+  }
+  .status-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; }
+  .status-new      { background: rgba(245,200,66,0.12); color: var(--status-new); }
+  .status-new::before { background: var(--status-new); }
+  .status-progress { background: rgba(77,163,255,0.12); color: var(--status-progress); }
+  .status-progress::before { background: var(--status-progress); }
+  .status-done     { background: rgba(61,214,140,0.12); color: var(--status-done); }
+  .status-done::before { background: var(--status-done); }
+  .status-rejected { background: rgba(255,92,92,0.12); color: var(--status-rejected); }
+  .status-rejected::before { background: var(--status-rejected); }
+
+  /* STATUS DROPDOWN */
+  .status-dropdown {
+    position: absolute; top: calc(100% + 4px); left: 0;
+    background: #222; border: 1px solid var(--border);
+    border-radius: 3px; z-index: 50; min-width: 160px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    display: none;
+  }
+  .status-dropdown.open { display: block; }
+  .status-opt {
+    padding: 10px 14px; font-size: 12px; font-weight: 600;
+    cursor: pointer; transition: background .1s;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .status-opt:hover { background: rgba(255,255,255,0.05); }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+  /* ── COMMENTS PANEL ── */
+  .panel-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5); backdrop-filter: blur(2px);
+    z-index: 200; display: none; align-items: flex-start; justify-content: flex-end;
+  }
+  .panel-overlay.open { display: flex; }
+  .side-panel {
+    width: 480px; height: 100vh;
+    background: var(--blk);
+    border-left: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    animation: slideIn .2s ease;
+    overflow: hidden;
+  }
+  @keyframes slideIn { from { transform: translateX(40px); opacity: 0; } }
+
+  .panel-head {
+    padding: 24px 28px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: flex-start;
+    flex-shrink: 0;
+  }
+  .panel-close {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(255,255,255,0.06); border: none;
+    color: var(--mut); font-size: 18px; cursor: pointer; transition: .15s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .panel-close:hover { background: rgba(255,255,255,0.12); color: #fff; }
+  .panel-lead-name { font-family: 'Unbounded', sans-serif; font-size: 16px; font-weight: 700; color: #fff; }
+  .panel-lead-phone { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--y); margin-top: 4px; }
+
+  .panel-info {
+    padding: 20px 28px;
+    border-bottom: 1px solid var(--border);
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px; flex-shrink: 0;
+  }
+  .info-item label { font-size: 10px; color: var(--mut); letter-spacing: 1px; text-transform: uppercase; display: block; margin-bottom: 4px; }
+  .info-item span { font-size: 13px; color: #fff; font-weight: 500; }
+
+  .panel-comments {
+    flex: 1; overflow-y: auto; padding: 20px 28px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .panel-comments::-webkit-scrollbar { width: 4px; }
+  .panel-comments::-webkit-scrollbar-track { background: transparent; }
+  .panel-comments::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+  .comment-bubble {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 3px; padding: 14px 16px;
+  }
+  .comment-meta {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 8px;
+  }
+  .comment-author { font-size: 11px; font-weight: 700; color: var(--y); letter-spacing: 0.3px; }
+  .comment-time { font-size: 11px; color: var(--mut); font-family: 'JetBrains Mono', monospace; }
+  .comment-text { font-size: 13px; line-height: 1.6; color: rgba(255,255,255,0.75); }
+  .no-comments { font-size: 13px; color: var(--mut); text-align: center; padding: 24px 0; }
+
+  .panel-input-area {
+    padding: 16px 28px 24px;
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .comment-input {
+    width: 100%; background: rgba(255,255,255,0.05);
+    border: 1.5px solid var(--border); border-radius: 3px;
+    padding: 12px 14px; font-family: 'Inter', sans-serif;
+    font-size: 13px; color: #fff; outline: none; resize: none;
+    min-height: 80px; transition: .2s; line-height: 1.5;
+  }
+  .comment-input:focus { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.07); }
+  .comment-input::placeholder { color: rgba(255,255,255,0.2); }
+  .comment-send {
+    margin-top: 10px; width: 100%;
+    background: var(--y); color: var(--blk); border: none;
+    padding: 12px; font-family: 'Unbounded', sans-serif;
+    font-weight: 800; font-size: 12px; cursor: pointer; border-radius: 2px;
+    transition: .2s;
+  }
+  .comment-send:hover { background: var(--yd); }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    text-align: center; padding: 80px 40px; color: var(--mut);
+  }
+  .empty-icon { font-size: 48px; margin-bottom: 16px; }
+  .empty-title { font-family: 'Unbounded', sans-serif; font-size: 16px; font-weight: 700; color: rgba(255,255,255,0.3); margin-bottom: 8px; }
+  .empty-text { font-size: 13px; }
+
+  /* ── LOADING ── */
+  .loading-row td { text-align: center; padding: 60px; color: var(--mut); font-size: 13px; }
+  .spinner {
+    display: inline-block; width: 20px; height: 20px;
+    border: 2px solid rgba(255,255,255,0.1);
+    border-top-color: var(--y); border-radius: 50%;
+    animation: spin .7s linear infinite; margin-right: 10px;
+    vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── FIREBASE CONFIG NOTICE ── */
+  .config-notice {
+    background: rgba(245,200,66,0.08); border: 1px solid rgba(245,200,66,0.2);
+    border-radius: 3px; padding: 14px 18px; margin-bottom: 24px;
+    font-size: 13px; color: rgba(245,200,66,0.8); display: none;
+    align-items: center; gap: 10px;
+  }
+  .config-notice.show { display: flex; }
+
+  /* ── RESPONSIVE ── */
+  @media(max-width: 900px) {
+    .sidebar { width: 60px; }
+    .sidebar-logo-name, .sidebar-logo-sub, .nav-item span, .sidebar-footer { display: none; }
+    .main { margin-left: 60px; padding: 20px 16px; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .side-panel { width: 100vw; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">ГЛАВТАКСИ</div>
+    <div class="login-sub">СЕРВИС · CRM</div>
+    <div class="login-title">Вход в кабинет</div>
+    <input class="login-input" type="email" id="loginEmail" placeholder="Email" autocomplete="email">
+    <input class="login-input" type="password" id="loginPass" placeholder="Пароль" autocomplete="current-password"
+           onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">ВОЙТИ →</button>
+    <div class="login-err" id="loginErr">Неверный email или пароль</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-name">ГЛАВТАКСИ</div>
+      <div class="sidebar-logo-sub">CRM · Заявки</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-item active" onclick="showView('leads')">
+        <span class="nav-icon">📋</span>
+        <span>Заявки</span>
+        <span class="nav-badge" id="newCount">0</span>
+      </div>
+      <div class="nav-item" onclick="showView('stats')">
+        <span class="nav-icon">📊</span>
+        <span>Аналитика</span>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="logout-btn" onclick="doLogout()">
+        <span>⬅</span> <span>Выйти</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main" id="mainContent">
+
+    <!-- LEADS VIEW -->
+    <div id="viewLeads">
+      <div class="topbar">
+        <div class="topbar-title">Заявки</div>
+        <div class="topbar-actions">
+          <button class="btn-refresh" onclick="loadLeads()">↻ Обновить</button>
+        </div>
+      </div>
+
+      <div class="config-notice" id="configNotice">
+        ⚠️ Firebase не настроен — вставьте конфигурацию в начало файла (строки с firebaseConfig)
+      </div>
+
+      <!-- STATS -->
+      <div class="stats-row">
+        <div class="stat-card s-new">
+          <div class="stat-num" id="stNew">–</div>
+          <div class="stat-label">Новых</div>
+        </div>
+        <div class="stat-card s-progress">
+          <div class="stat-num" id="stProgress">–</div>
+          <div class="stat-label">В работе</div>
+        </div>
+        <div class="stat-card s-done">
+          <div class="stat-num" id="stDone">–</div>
+          <div class="stat-label">Завершено</div>
+        </div>
+        <div class="stat-card s-all">
+          <div class="stat-num" id="stAll">–</div>
+          <div class="stat-label">Всего</div>
+        </div>
+      </div>
+
+      <!-- FILTERS -->
+      <div class="filters-row">
+        <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">Все</button>
+        <button class="filter-btn" data-filter="new" onclick="setFilter('new', this)">Новые</button>
+        <button class="filter-btn" data-filter="progress" onclick="setFilter('progress', this)">В работе</button>
+        <button class="filter-btn" data-filter="done" onclick="setFilter('done', this)">Завершены</button>
+        <button class="filter-btn" data-filter="rejected" onclick="setFilter('rejected', this)">Отклонены</button>
+        <input class="search-input" id="searchInput" placeholder="Поиск по имени, телефону..." oninput="renderLeads()">
+      </div>
+
+      <!-- TABLE -->
+      <table class="leads-table" id="leadsTable">
+        <thead>
+          <tr>
+            <th>Клиент</th>
+            <th>Телефон</th>
+            <th>Источник</th>
+            <th>Авто / Марки</th>
+            <th>Статус</th>
+            <th>Дата</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="leadsBody">
+          <tr class="loading-row"><td colspan="7"><span class="spinner"></span>Загружаем заявки...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- STATS VIEW -->
+    <div id="viewStats" style="display:none">
+      <div class="topbar">
+        <div class="topbar-title">Аналитика</div>
+      </div>
+      <div id="statsContent" style="color:var(--mut);font-size:13px">Загружается...</div>
+    </div>
+
+  </main>
+</div>
+
+<!-- SIDE PANEL (comments) -->
+<div class="panel-overlay" id="panelOverlay" onclick="closePanelOutside(event)">
+  <div class="side-panel" id="sidePanel">
+    <div class="panel-head">
+      <div>
+        <div class="panel-lead-name" id="panelName">—</div>
+        <div class="panel-lead-phone" id="panelPhone">—</div>
+      </div>
+      <button class="panel-close" onclick="closePanel()">✕</button>
+    </div>
+    <div class="panel-info" id="panelInfo"></div>
+    <div class="panel-comments" id="panelComments"></div>
+    <div class="panel-input-area">
+      <textarea class="comment-input" id="commentInput" placeholder="Написать комментарий менеджера..."></textarea>
+      <button class="comment-send" onclick="addComment()">ДОБАВИТЬ КОММЕНТАРИЙ</button>
+    </div>
+  </div>
+</div>
+
+<!-- FIREBASE -->
+<script type="module">
+  import { initializeApp }            from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+                                       from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+  import { getFirestore, collection, query, orderBy, getDocs, doc, updateDoc, arrayUnion, Timestamp }
+                                       from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+  // ═══════════════════════════════════════════════════
+  //  НАСТРОЙКИ FIREBASE — вставьте свои ключи
+  //  console.firebase.google.com → ваш проект →
+  //  Настройки проекта → Веб-приложение → firebaseConfig
+  // ═══════════════════════════════════════════════════
+  const firebaseConfig = {
+    apiKey:            "ВСТАВЬТЕ_apiKey",
+    authDomain:        "ВСТАВЬТЕ_authDomain",
+    projectId:         "ВСТАВЬТЕ_projectId",
+    storageBucket:     "ВСТАВЬТЕ_storageBucket",
+    messagingSenderId: "ВСТАВЬТЕ_messagingSenderId",
+    appId:             "ВСТАВЬТЕ_appId"
+  };
+  // ═══════════════════════════════════════════════════
+
+  const CONFIGURED = firebaseConfig.apiKey !== 'ВСТАВЬТЕ_apiKey';
+
+  let app, auth, db;
+  if(CONFIGURED){
+    app  = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    db   = getFirestore(app);
+  }
+
+  // ── STATE ──
+  let allLeads   = [];
+  let currentFilter = 'all';
+  let currentLeadId = null;
+
+  // ── AUTH ──
+  window.doLogin = async function() {
+    if(!CONFIGURED){
+      // Dev mode — demo login
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      document.getElementById('configNotice').classList.add('show');
+      loadDemoLeads();
+      return;
+    }
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass  = document.getElementById('loginPass').value;
+    try {
+      await signInWithEmailAndPassword(auth, email, pass);
+    } catch(e) {
+      document.getElementById('loginErr').style.display = 'block';
+    }
+  };
+
+  window.doLogout = async function() {
+    if(CONFIGURED) await signOut(auth);
+    location.reload();
+  };
+
+  if(CONFIGURED){
+    onAuthStateChanged(auth, user => {
+      if(user){
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+        loadLeads();
+      }
+    });
+  }
+
+  // ── LOAD LEADS ──
+  window.loadLeads = async function() {
+    if(!CONFIGURED){ loadDemoLeads(); return; }
+    document.getElementById('leadsBody').innerHTML =
+      '<tr class="loading-row"><td colspan="7"><span class="spinner"></span>Загружаем...</td></tr>';
+    const q = query(collection(db, 'leads'), orderBy('createdAt', 'desc'));
+    const snap = await getDocs(q);
+    allLeads = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    updateStats();
+    renderLeads();
+  };
+
+  function loadDemoLeads(){
+    allLeads = [
+      { id:'demo1', name:'Иван Петров', phone:'+7 999 123-45-67', company:'ТаксиМосква', cars:'42 авто', biz:'Таксопарк', brands:'Kia, Hyundai', priority:'ТО по регламенту', source:'Квиз', status:'new', createdAt:{ seconds: Date.now()/1000 - 3600 }, comments:[] },
+      { id:'demo2', name:'Сергей Волков', phone:'+7 916 987-65-43', company:'GetCar', cars:'18 авто', biz:'Каршеринг', brands:'Volkswagen, Skoda', priority:'Кузовной ремонт', source:'CTA-форма', status:'progress', createdAt:{ seconds: Date.now()/1000 - 86400 }, comments:[{author:'Менеджер', text:'Договорились на встречу в пятницу', time:'2024-01-15 14:30'}] },
+      { id:'demo3', name:'Алексей Сидоров', phone:'+7 903 555-12-34', company:'АвтоПрокат24', cars:'7 авто', biz:'Прокатная компания', brands:'Lada, Renault', priority:'Диагностика', source:'Квиз', status:'done', createdAt:{ seconds: Date.now()/1000 - 172800 }, comments:[] },
+    ];
+    updateStats();
+    renderLeads();
+  }
+
+  function updateStats(){
+    const n = allLeads.filter(l=>l.status==='new').length;
+    const p = allLeads.filter(l=>l.status==='progress').length;
+    const d = allLeads.filter(l=>l.status==='done').length;
+    document.getElementById('stNew').textContent = n;
+    document.getElementById('stProgress').textContent = p;
+    document.getElementById('stDone').textContent = d;
+    document.getElementById('stAll').textContent = allLeads.length;
+    document.getElementById('newCount').textContent = n;
+  }
+
+  window.renderLeads = function(){
+    const search = (document.getElementById('searchInput').value||'').toLowerCase();
+    let filtered = allLeads.filter(l=>{
+      if(currentFilter !== 'all' && l.status !== currentFilter) return false;
+      if(search){
+        const hay = [l.name,l.phone,l.company,l.biz,l.brands].join(' ').toLowerCase();
+        if(!hay.includes(search)) return false;
+      }
+      return true;
+    });
+
+    const tbody = document.getElementById('leadsBody');
+    if(!filtered.length){
+      tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">📭</div><div class="empty-title">Заявок нет</div><div class="empty-text">Измените фильтр или дождитесь новых</div></div></td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(l => {
+      const date = l.createdAt?.seconds
+        ? new Date(l.createdAt.seconds*1000).toLocaleString('ru', {day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'})
+        : '—';
+      const statusMap = { new:'Новая', progress:'В работе', done:'Завершена', rejected:'Отклонена' };
+      const commentCount = (l.comments||[]).length;
+      return `
+      <tr class="lead-row" id="row-${l.id}" onclick="openPanel('${l.id}')">
+        <td><div class="td-inner">
+          <div class="lead-name">${l.name||'—'}</div>
+          <div class="lead-company">${l.company||'—'}</div>
+        </div></td>
+        <td><div class="td-inner"><div class="lead-phone">${l.phone||'—'}</div></div></td>
+        <td><div class="td-inner"><span class="lead-source">${l.source||'—'}</span></div></td>
+        <td><div class="td-inner">
+          <div class="lead-cars">${l.cars||'—'}</div>
+          <div class="lead-company">${l.brands||''}</div>
+        </div></td>
+        <td><div class="td-inner">
+          <div class="status-badge status-${l.status||'new'}" onclick="toggleStatusDrop(event,'${l.id}')">
+            ${statusMap[l.status||'new']||l.status}
+            <div class="status-dropdown" id="drop-${l.id}">
+              <div class="status-opt" onclick="setStatus(event,'${l.id}','new')"><span class="status-dot" style="background:var(--status-new)"></span>Новая</div>
+              <div class="status-opt" onclick="setStatus(event,'${l.id}','progress')"><span class="status-dot" style="background:var(--status-progress)"></span>В работе</div>
+              <div class="status-opt" onclick="setStatus(event,'${l.id}','done')"><span class="status-dot" style="background:var(--status-done)"></span>Завершена</div>
+              <div class="status-opt" onclick="setStatus(event,'${l.id}','rejected')"><span class="status-dot" style="background:var(--status-rejected)"></span>Отклонена</div>
+            </div>
+          </div>
+        </div></td>
+        <td><div class="td-inner"><div class="lead-date">${date}</div></div></td>
+        <td><div class="td-inner" style="color:var(--mut);font-size:12px">
+          ${commentCount ? `💬 ${commentCount}` : ''}
+        </div></td>
+      </tr>`;
+    }).join('');
+  };
+
+  // ── FILTER ──
+  window.setFilter = function(f, btn){
+    currentFilter = f;
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    renderLeads();
+  };
+
+  // ── STATUS ──
+  window.toggleStatusDrop = function(e, id){
+    e.stopPropagation();
+    document.querySelectorAll('.status-dropdown').forEach(d=>{ if(d.id!=='drop-'+id) d.classList.remove('open'); });
+    document.getElementById('drop-'+id).classList.toggle('open');
+  };
+  document.addEventListener('click', ()=>document.querySelectorAll('.status-dropdown').forEach(d=>d.classList.remove('open')));
+
+  window.setStatus = async function(e, id, status){
+    e.stopPropagation();
+    const lead = allLeads.find(l=>l.id===id);
+    if(!lead) return;
+    lead.status = status;
+    if(CONFIGURED){
+      await updateDoc(doc(db,'leads',id), { status });
+    }
+    updateStats();
+    renderLeads();
+    if(currentLeadId===id) openPanel(id);
+  };
+
+  // ── PANEL ──
+  window.openPanel = function(id){
+    currentLeadId = id;
+    const l = allLeads.find(x=>x.id===id);
+    if(!l) return;
+    document.querySelectorAll('.lead-row').forEach(r=>r.classList.remove('selected'));
+    const row = document.getElementById('row-'+id);
+    if(row) row.classList.add('selected');
+
+    document.getElementById('panelName').textContent  = l.name||'—';
+    document.getElementById('panelPhone').textContent = l.phone||'—';
+
+    document.getElementById('panelInfo').innerHTML = `
+      <div class="info-item"><label>Компания</label><span>${l.company||'—'}</span></div>
+      <div class="info-item"><label>Источник</label><span>${l.source||'—'}</span></div>
+      <div class="info-item"><label>Кол-во авто</label><span>${l.cars||'—'}</span></div>
+      <div class="info-item"><label>Тип бизнеса</label><span>${l.biz||'—'}</span></div>
+      <div class="info-item"><label>Марки</label><span>${l.brands||'—'}</span></div>
+      <div class="info-item"><label>Приоритет</label><span>${l.priority||'—'}</span></div>
+    `;
+
+    const comments = l.comments||[];
+    const pc = document.getElementById('panelComments');
+    if(!comments.length){
+      pc.innerHTML = '<div class="no-comments">Комментариев пока нет</div>';
+    } else {
+      pc.innerHTML = comments.map(c=>`
+        <div class="comment-bubble">
+          <div class="comment-meta">
+            <span class="comment-author">${c.author||'Менеджер'}</span>
+            <span class="comment-time">${c.time||''}</span>
+          </div>
+          <div class="comment-text">${c.text}</div>
+        </div>
+      `).join('');
+      pc.scrollTop = pc.scrollHeight;
+    }
+
+    document.getElementById('commentInput').value = '';
+    document.getElementById('panelOverlay').classList.add('open');
+  };
+
+  window.closePanel = function(){
+    document.getElementById('panelOverlay').classList.remove('open');
+    document.querySelectorAll('.lead-row').forEach(r=>r.classList.remove('selected'));
+    currentLeadId = null;
+  };
+  window.closePanelOutside = function(e){
+    if(e.target===document.getElementById('panelOverlay')) closePanel();
+  };
+
+  // ── ADD COMMENT ──
+  window.addComment = async function(){
+    const text = document.getElementById('commentInput').value.trim();
+    if(!text || !currentLeadId) return;
+
+    const now = new Date().toLocaleString('ru',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'});
+    const comment = { author:'Менеджер', text, time: now };
+
+    const lead = allLeads.find(l=>l.id===currentLeadId);
+    if(!lead.comments) lead.comments = [];
+    lead.comments.push(comment);
+
+    if(CONFIGURED){
+      await updateDoc(doc(db,'leads',currentLeadId), {
+        comments: arrayUnion(comment)
+      });
+    }
+
+    document.getElementById('commentInput').value = '';
+    openPanel(currentLeadId);
+    renderLeads();
+  };
+
+  // ── VIEW SWITCH ──
+  window.showView = function(view){
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    document.getElementById('viewLeads').style.display  = view==='leads'  ? 'block' : 'none';
+    document.getElementById('viewStats').style.display  = view==='stats'  ? 'block' : 'none';
+    if(view==='stats') renderStats();
+  };
+
+  function renderStats(){
+    const bySource = {};
+    const byBiz    = {};
+    allLeads.forEach(l=>{
+      bySource[l.source||'—'] = (bySource[l.source||'—']||0)+1;
+      byBiz[l.biz||'—']       = (byBiz[l.biz||'—']||0)+1;
+    });
+    const src = Object.entries(bySource).sort((a,b)=>b[1]-a[1]);
+    const biz = Object.entries(byBiz).sort((a,b)=>b[1]-a[1]);
+
+    document.getElementById('statsContent').innerHTML = `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:700px">
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:4px;padding:24px">
+          <div style="font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;margin-bottom:16px;color:#fff">По источнику</div>
+          ${src.map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">
+            <span>${k}</span><span style="font-family:'JetBrains Mono',monospace;color:var(--y)">${v}</span></div>`).join('')}
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:4px;padding:24px">
+          <div style="font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;margin-bottom:16px;color:#fff">По типу бизнеса</div>
+          ${biz.map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">
+            <span>${k}</span><span style="font-family:'JetBrains Mono',monospace;color:var(--y)">${v}</span></div>`).join('')}
+        </div>
+      </div>`;
+  }
+</script>
+</body>
+</html>
