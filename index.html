@@ -2,6 +2,19 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+<meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self' 'unsafe-inline' https://www.gstatic.com https://cdn.jsdelivr.net https://fonts.googleapis.com;
+  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+  font-src https://fonts.gstatic.com;
+  img-src 'self' data: https://images.unsplash.com https://images.pexels.com;
+  connect-src https://*.googleapis.com https://*.firebaseio.com https://*.firestore.googleapis.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com;
+  frame-ancestors 'none';
+">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Firebase -->
 <script type="module">
@@ -2288,6 +2301,42 @@ function quizBack(step){
   quizSetProgress(step-1);
 }
 
+
+// ── Безопасность форм ──────────────────────────
+var _formLastSubmit = 0;
+var _formSubmitCount = 0;
+
+function sanitizeInput(str) {
+  if (!str) return '';
+  return str
+    .replace(/[<>'"`;]/g, '')   // убираем опасные символы
+    .replace(/javascript:/gi, '')
+    .replace(/on\w+\s*=/gi, '')
+    .trim()
+    .slice(0, 200);              // ограничиваем длину
+}
+
+function checkRateLimit() {
+  var now = Date.now();
+  if (now - _formLastSubmit < 30000) {  // 30 сек между отправками
+    _formSubmitCount++;
+    if (_formSubmitCount > 3) {
+      alert('Слишком много заявок. Пожалуйста, позвоните нам напрямую.');
+      return false;
+    }
+  } else {
+    _formSubmitCount = 0;
+  }
+  _formLastSubmit = now;
+  return true;
+}
+
+function validatePhone(phone) {
+  // Разрешаем +7, 8, цифры, пробелы, дефисы, скобки
+  var cleaned = phone.replace(/[\s\-\(\)]/g, '');
+  return /^[\+]?[78]\d{9,10}$/.test(cleaned);
+}
+// ──────────────────────────────────────────────
 async function submitCTA(){
   var name    = document.getElementById('ctaName').value.trim();
   var phone   = document.getElementById('ctaPhone').value.trim();
@@ -2300,12 +2349,18 @@ async function submitCTA(){
   btn.textContent = 'Отправляем...';
   btn.disabled = true;
 
+  if(!validatePhone(phone)){
+    alert('Пожалуйста, введите корректный номер телефона');
+    return;
+  }
+  if(!checkRateLimit()) return;
+
   var data = {
     source:   'CTA-форма',
-    name:     name    || '—',
-    phone:    phone,
-    company:  company || '—',
-    cars:     cars    || '—',
+    name:     sanitizeInput(name)    || '—',
+    phone:    sanitizeInput(phone),
+    company:  sanitizeInput(company) || '—',
+    cars:     sanitizeInput(cars)    || '—',
     brands:   '—',
     biz:      '—',
     priority: '—'
@@ -2522,18 +2577,24 @@ async function submitModal(){
   var source  = document.getElementById('leadModal').dataset.source || 'Всплывающая форма';
   var btn     = document.getElementById('mSubmit');
 
-  if(!phone){ document.getElementById('mPhone').focus(); document.getElementById('mPhone').style.borderColor='#FF5C5C'; return; }
+  if(!phone || !validatePhone(phone)){
+    document.getElementById('mPhone').focus();
+    document.getElementById('mPhone').style.borderColor='#FF5C5C';
+    document.getElementById('mPhone').placeholder = 'Введите корректный телефон';
+    return;
+  }
   document.getElementById('mPhone').style.borderColor = '';
+  if(!checkRateLimit()) return;
 
   btn.textContent = 'Отправляем...';
   btn.disabled = true;
 
   var data = {
-    source:   source,
-    name:     name    || '—',
-    phone:    phone,
-    company:  company || '—',
-    cars:     cars    || '—',
+    source:   sanitizeInput(source),
+    name:     sanitizeInput(name)    || '—',
+    phone:    sanitizeInput(phone),
+    company:  sanitizeInput(company) || '—',
+    cars:     sanitizeInput(cars)    || '—',
     brands:   '—',
     biz:      '—',
     priority: '—'

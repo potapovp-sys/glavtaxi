@@ -2,6 +2,19 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<meta http-equiv="Referrer-Policy" content="no-referrer">
+<meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self' 'unsafe-inline' https://www.gstatic.com https://fonts.googleapis.com;
+  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+  font-src https://fonts.gstatic.com;
+  img-src 'self' data:;
+  connect-src https://*.googleapis.com https://*.firebaseio.com https://*.firestore.googleapis.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com;
+  frame-ancestors 'none';
+">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ГлавТакси CRM — Заявки</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -549,22 +562,63 @@
   const auth = getAuth(app);
   const db   = getFirestore(app);
 
+
+  // ── XSS защита: экранируем все данные из Firestore ──
+  function esc(str){
+    if(str == null) return '—';
+    return String(str)
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;')
+      .replace(/'/g,'&#x27;')
+      .replace(/`/g,'&#x60;');
+  }
+
   // ── STATE ──
   let allLeads      = [];
   let currentFilter = 'all';
   let currentLeadId = null;
 
   // ── AUTH — реальная проверка Firebase ──
+  // Защита от брутфорса
+  let _loginAttempts = 0;
+  let _loginBlockedUntil = 0;
+
   window.doLogin = async function() {
-    const email = document.getElementById('loginEmail').value.trim();
-    const pass  = document.getElementById('loginPass').value;
+    const now = Date.now();
     const errEl = document.getElementById('loginErr');
     errEl.style.display = 'none';
+
+    // Проверяем блокировку
+    if(now < _loginBlockedUntil) {
+      const secs = Math.ceil((_loginBlockedUntil - now) / 1000);
+      errEl.textContent = `Слишком много попыток. Подождите ${secs} сек.`;
+      errEl.style.display = 'block';
+      return;
+    }
+
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass  = document.getElementById('loginPass').value;
     if(!email || !pass){ errEl.textContent = 'Введите email и пароль'; errEl.style.display = 'block'; return; }
+
+    // Базовая валидация email
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+      errEl.textContent = 'Введите корректный email'; errEl.style.display = 'block'; return;
+    }
+
     try {
       await signInWithEmailAndPassword(auth, email, pass);
+      _loginAttempts = 0; // сбросить счётчик при успехе
     } catch(e) {
-      errEl.textContent = 'Неверный email или пароль';
+      _loginAttempts++;
+      if(_loginAttempts >= 5) {
+        _loginBlockedUntil = Date.now() + 60000; // блок на 60 сек
+        _loginAttempts = 0;
+        errEl.textContent = 'Слишком много попыток. Блокировка на 60 секунд.';
+      } else {
+        errEl.textContent = `Неверный email или пароль (попытка ${_loginAttempts}/5)`;
+      }
       errEl.style.display = 'block';
     }
   };
@@ -638,13 +692,13 @@
       return `
       <tr class="lead-row" id="row-${l.id}" onclick="openPanel('${l.id}')">
         <td><div class="td-inner">
-          <div class="lead-name">${l.name||'—'}</div>
-          <div class="lead-company">${l.company||'—'}</div>
+          <div class="lead-name">${esc(l.name)}</div>
+          <div class="lead-company">${esc(l.company)}</div>
         </div></td>
-        <td><div class="td-inner"><div class="lead-phone">${l.phone||'—'}</div></div></td>
-        <td><div class="td-inner"><span class="lead-source">${l.source||'—'}</span></div></td>
+        <td><div class="td-inner"><div class="lead-phone">${esc(l.phone)}</div></div></td>
+        <td><div class="td-inner"><span class="lead-source">${esc(l.source)}</span></div></td>
         <td><div class="td-inner">
-          <div class="lead-cars">${l.cars||'—'}</div>
+          <div class="lead-cars">${esc(l.cars)}</div>
           <div class="lead-company">${l.brands||''}</div>
         </div></td>
         <td><div class="td-inner">
@@ -699,15 +753,15 @@
     const row = document.getElementById('row-'+id);
     if(row) row.classList.add('selected');
 
-    document.getElementById('panelName').textContent  = l.name||'—';
-    document.getElementById('panelPhone').textContent = l.phone||'—';
+    document.getElementById('panelName').textContent  = esc(l.name);
+    document.getElementById('panelPhone').textContent = esc(l.phone);
     document.getElementById('panelInfo').innerHTML = `
-      <div class="info-item"><label>Компания</label><span>${l.company||'—'}</span></div>
-      <div class="info-item"><label>Источник</label><span>${l.source||'—'}</span></div>
-      <div class="info-item"><label>Кол-во авто</label><span>${l.cars||'—'}</span></div>
-      <div class="info-item"><label>Тип бизнеса</label><span>${l.biz||'—'}</span></div>
-      <div class="info-item"><label>Марки</label><span>${l.brands||'—'}</span></div>
-      <div class="info-item"><label>Приоритет</label><span>${l.priority||'—'}</span></div>
+      <div class="info-item"><label>Компания</label><span>${esc(l.company)}</span></div>
+      <div class="info-item"><label>Источник</label><span>${esc(l.source)}</span></div>
+      <div class="info-item"><label>Кол-во авто</label><span>${esc(l.cars)}</span></div>
+      <div class="info-item"><label>Тип бизнеса</label><span>${esc(l.biz)}</span></div>
+      <div class="info-item"><label>Марки</label><span>${esc(l.brands)}</span></div>
+      <div class="info-item"><label>Приоритет</label><span>${esc(l.priority)}</span></div>
     `;
 
     const comments = l.comments||[];
@@ -718,10 +772,10 @@
       pc.innerHTML = comments.map(c=>`
         <div class="comment-bubble">
           <div class="comment-meta">
-            <span class="comment-author">${c.author||'Менеджер'}</span>
-            <span class="comment-time">${c.time||''}</span>
+            <span class="comment-author">${esc(c.author||'Менеджер')}</span>
+            <span class="comment-time">${esc(c.time)}</span>
           </div>
-          <div class="comment-text">${c.text}</div>
+          <div class="comment-text">${esc(c.text)}</div>
         </div>
       `).join('');
       pc.scrollTop = pc.scrollHeight;
@@ -743,7 +797,8 @@
     const text = document.getElementById('commentInput').value.trim();
     if(!text || !currentLeadId) return;
     const now = new Date().toLocaleString('ru',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'});
-    const comment = { author:'Менеджер', text, time: now };
+    const text_safe = text.replace(/[<>]/g,'').slice(0,500); // sanitize
+    const comment = { author:'Менеджер', text: text_safe, time: now };
     const lead = allLeads.find(l=>l.id===currentLeadId);
     if(!lead.comments) lead.comments = [];
     lead.comments.push(comment);
@@ -766,8 +821,8 @@
   function renderStats(){
     const bySource = {}, byBiz = {};
     allLeads.forEach(l=>{
-      bySource[l.source||'—'] = (bySource[l.source||'—']||0)+1;
-      byBiz[l.biz||'—']       = (byBiz[l.biz||'—']||0)+1;
+      bySource[esc(l.source)] = (bySource[esc(l.source)]||0)+1;
+      byBiz[esc(l.biz)]       = (byBiz[esc(l.biz)]||0)+1;
     });
     const src = Object.entries(bySource).sort((a,b)=>b[1]-a[1]);
     const biz = Object.entries(byBiz).sort((a,b)=>b[1]-a[1]);
@@ -775,11 +830,11 @@
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:700px">
         <div style="background:var(--card);border:1px solid var(--border);border-radius:4px;padding:24px">
           <div style="font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;margin-bottom:16px;color:#fff">По источнику</div>
-          ${src.map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span>${k}</span><span style="font-family:'JetBrains Mono',monospace;color:var(--y)">${v}</span></div>`).join('')}
+          ${src.map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span>${esc(k)}</span><span style="font-family:'JetBrains Mono',monospace;color:var(--y)">${Number(v)}</span></div>`).join('')}
         </div>
         <div style="background:var(--card);border:1px solid var(--border);border-radius:4px;padding:24px">
           <div style="font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;margin-bottom:16px;color:#fff">По типу бизнеса</div>
-          ${biz.map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span>${k}</span><span style="font-family:'JetBrains Mono',monospace;color:var(--y)">${v}</span></div>`).join('')}
+          ${biz.map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span>${esc(k)}</span><span style="font-family:'JetBrains Mono',monospace;color:var(--y)">${Number(v)}</span></div>`).join('')}
         </div>
       </div>`;
   }
