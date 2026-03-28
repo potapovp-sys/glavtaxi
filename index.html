@@ -151,15 +151,110 @@ header{
 .stat-val em{color:var(--y);font-style:normal;}
 .stat-lbl{font-size:11px;font-weight:500;color:rgba(255,255,255,.32);line-height:1.45;}
 
-/* ── OWNER STRIP ── */
-.owner-strip{background:#fff;padding:40px;border-bottom:1px solid var(--border);}
-.owner-strip-inner{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:auto 1fr auto;gap:32px;align-items:center;}
-.owner-photo{width:76px;height:76px;border-radius:50%;object-fit:cover;border:3px solid var(--y);flex-shrink:0;}
-.owner-text h3{font-family:'Unbounded',sans-serif;font-size:17px;font-weight:900;color:var(--blk);margin-bottom:5px;}
-.owner-text p{font-size:13px;color:var(--mut);line-height:1.6;max-width:580px;}
-.owner-text p strong{color:var(--blk);}
-.owner-cta-btn{background:var(--blk);color:var(--y);border:none;padding:13px 22px;font-family:'Unbounded',sans-serif;font-weight:800;font-size:11px;border-radius:var(--r);cursor:pointer;transition:.2s;white-space:nowrap;line-height:1.4;text-align:center;}
-.owner-cta-btn:hover{background:#333;}
+/* hero UTP cards */
+.hero-utp-cards{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;
+  margin-bottom:36px;
+}
+.hero-utp-card{
+  background:rgba(245,200,66,0.08);
+  border:1px solid rgba(245,200,66,0.2);
+  border-radius:var(--r);
+  padding:14px 16px;
+}
+.hero-utp-val{
+  font-family:'Unbounded',sans-serif;
+  font-size:22px;font-weight:900;color:var(--y);
+  line-height:1;margin-bottom:4px;
+}
+.hero-utp-label{
+  font-size:11px;color:rgba(255,255,255,0.5);
+  font-weight:500;line-height:1.4;
+}
+
+/* ── OWNER SECTION ── */
+.owner-section{
+  background:#fff;
+  padding:64px 40px;
+  border-bottom:1px solid var(--border);
+}
+.owner-inner{
+  max-width:1120px;margin:0 auto;
+  display:grid;
+  grid-template-columns:320px 1fr;
+  gap:56px;align-items:start;
+}
+.owner-left{
+  display:flex;flex-direction:column;align-items:center;
+  text-align:center;
+}
+.owner-photo-wrap{position:relative;margin-bottom:20px;}
+.owner-avatar{
+  width:220px;height:220px;
+  border-radius:50%;object-fit:cover;object-position:top center;
+  border:4px solid #fff;
+  box-shadow:0 0 0 5px var(--y),0 12px 40px rgba(0,0,0,.12);
+  display:block;
+}
+.owner-name-block{margin-bottom:16px;}
+.owner-name{font-family:'Unbounded',sans-serif;font-size:20px;font-weight:900;color:var(--blk);margin-bottom:4px;}
+.owner-role{font-size:13px;color:var(--mut);font-weight:500;line-height:1.4;}
+.owner-exp{
+  display:inline-flex;flex-direction:column;align-items:center;
+  background:var(--blk);padding:14px 24px;border-radius:var(--r);
+  width:100%;
+}
+.owner-exp-num{font-family:'Unbounded',sans-serif;font-size:26px;font-weight:900;color:var(--y);line-height:1;}
+.owner-exp-lbl{font-size:10px;color:rgba(255,255,255,.45);font-weight:600;letter-spacing:.8px;text-transform:uppercase;margin-top:4px;}
+.owner-right{}
+.owner-tag-line{
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(245,200,66,.1);border:1px solid rgba(245,200,66,.3);
+  color:var(--yd);font-size:10px;font-weight:700;
+  letter-spacing:2px;text-transform:uppercase;
+  padding:5px 13px;border-radius:var(--r);margin-bottom:18px;
+}
+.owner-headline{
+  font-family:'Unbounded',sans-serif;
+  font-size:clamp(20px,2.2vw,28px);font-weight:900;
+  color:var(--blk);line-height:1.2;margin-bottom:20px;
+}
+.owner-headline .yl{color:var(--yd);}
+.owner-story{
+  font-size:14px;color:#444;line-height:1.8;
+  margin-bottom:28px;
+}
+.owner-story p{margin-bottom:14px;}
+.owner-story p:last-child{margin-bottom:0;}
+.owner-story strong{color:var(--blk);}
+.owner-facts{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+  margin-bottom:28px;
+}
+.owner-fact{
+  background:var(--bg);border:1px solid var(--border);
+  border-left:3px solid var(--y);
+  padding:14px 16px;border-radius:var(--r);
+  display:flex;gap:10px;align-items:flex-start;
+}
+.owner-fact-ico{font-size:18px;line-height:1;flex-shrink:0;margin-top:1px;}
+.owner-fact strong{display:block;font-size:13px;font-weight:700;color:var(--blk);margin-bottom:2px;}
+.owner-fact span{font-size:12px;color:var(--mut);}
+.owner-quote-block{
+  background:var(--blk);border-radius:var(--r);
+  padding:20px 24px;
+  display:flex;align-items:center;gap:16px;
+}
+.owner-quote-ava{
+  width:44px;height:44px;min-width:44px;
+  border-radius:50%;object-fit:cover;
+  border:2px solid var(--y);
+}
+.owner-quote-text{
+  font-size:13px;color:rgba(255,255,255,.6);
+  line-height:1.6;font-style:italic;
+}
+.owner-quote-text strong{color:var(--y);font-style:normal;}
 
 /* ── SECTION HEAD ── */
 .section-head{max-width:1120px;margin:0 auto 44px;}
@@ -384,8 +479,14 @@ footer{background:var(--blk);border-top:1px solid rgba(255,255,255,.06);padding:
   .h-hours{display:none;}.h-messengers{display:none;}
   .hero-inner{grid-template-columns:1fr;gap:32px;padding:48px 20px 56px;}
   .hero-promo{display:none;}
+  .hero-utp-cards{grid-template-columns:1fr 1fr;}
   .stats-bar{grid-template-columns:1fr 1fr;}
-  .owner-strip{padding:28px 20px;}
+  .owner-section{padding:48px 20px;}
+  .owner-inner{grid-template-columns:1fr;gap:32px;}
+  .owner-left{flex-direction:row;text-align:left;align-items:center;gap:24px;}
+  .owner-avatar{width:110px;height:110px;}
+  .owner-exp{display:none;}
+  .owner-facts{grid-template-columns:1fr;}
   .services{padding:48px 20px;}
   .compare-section{padding:48px 20px;}
   .gallery-section{padding:48px 20px;}
@@ -406,9 +507,15 @@ footer{background:var(--blk);border-top:1px solid rgba(255,255,255,.06);padding:
   .h-logo-sub{display:none;}
   .h-btn{padding:8px 12px;font-size:10px;}
   .hero h1{font-size:clamp(22px,7.5vw,32px);}
+  .hero-utp-cards{grid-template-columns:1fr 1fr;}
+  .hero-utp-val{font-size:18px;}
   .stat-val{font-size:20px;}
   .stats-bar{grid-template-columns:1fr 1fr;}
-  .srv-grid{grid-template-columns:1fr;}
+  .owner-left{flex-direction:column;text-align:center;align-items:center;}
+  .owner-avatar{width:150px;height:150px;}
+  .owner-exp{display:flex;}
+  .owner-facts{grid-template-columns:1fr;}
+  .owner-quote-block{flex-direction:column;text-align:center;}
   .gallery-grid{grid-template-columns:repeat(2,1fr);}
   .quiz-options{grid-template-columns:1fr;}
   .quiz-checkboxes{grid-template-columns:repeat(2,1fr);}
@@ -425,7 +532,6 @@ footer{background:var(--blk);border-top:1px solid rgba(255,255,255,.06);padding:
 <header>
   <a href="#" class="h-logo">
     <div class="h-logo-name">ГЛАВТАКСИ СЕРВИС</div>
-    <div class="h-logo-sub">Сервис для таксопарков и каршеринга</div>
   </a>
   <nav class="h-nav">
     <a href="#services">Услуги и цены</a>
@@ -458,19 +564,26 @@ footer{background:var(--blk);border-top:1px solid rgba(255,255,255,.06);padding:
     <div class="hero-left">
       <div class="hero-tag">🔧 Только для автопарков · B2B · Москва</div>
       <h1>Сервис технического<br>обслуживания<br>для <span class="yl">таксопарков</span></h1>
-      <p class="hero-desc">
-        <strong>ТО за 30 минут.</strong> Без очередей, без простоев.
-        15 подъёмников, склад расходников под ваши марки, постоплата 15 дней.
-        Работаем только с автопарками — таксопарки, каршеринг, прокат.
-      </p>
-      <div class="hero-perks">
-        <div class="hero-perk"><div class="hero-perk-dot"></div><div><strong>1 000 ₽</strong> работы — замена масла + 2 фильтра</div></div>
-        <div class="hero-perk"><div class="hero-perk-dot"></div><div><strong>15 подъёмников</strong> — ни одна машина не ждёт в очереди</div></div>
-        <div class="hero-perk"><div class="hero-perk-dot"></div><div><strong>Постоплата 15 дней</strong> — платите после выхода машин на линию</div></div>
-        <div class="hero-perk"><div class="hero-perk-dot"></div><div><strong>Первые 10 ТО бесплатно</strong> — проверьте нас без риска</div></div>
+      <div class="hero-utp-cards">
+        <div class="hero-utp-card">
+          <div class="hero-utp-val">1 200 ₽</div>
+          <div class="hero-utp-label">стоимость ТО — масло + 2 фильтра</div>
+        </div>
+        <div class="hero-utp-card">
+          <div class="hero-utp-val">30 мин</div>
+          <div class="hero-utp-label">гарантированное время ремонта</div>
+        </div>
+        <div class="hero-utp-card">
+          <div class="hero-utp-val">7 дней</div>
+          <div class="hero-utp-label">отсрочка платежа для автопарков</div>
+        </div>
+        <div class="hero-utp-card">
+          <div class="hero-utp-val">15 шт</div>
+          <div class="hero-utp-label">подъёмников — очередей нет</div>
+        </div>
       </div>
       <div class="hero-actions">
-        <button class="btn-primary" onclick="openModal('Hero — Забрать 10 ТО')">🎁 Забрать 10 ТО бесплатно</button>
+        <button class="btn-primary" onclick="openModal('Hero — Получить КП')">Получить коммерческое предложение</button>
         <a href="tel:+79011478090" class="btn-outline">
           <div class="btn-outline-icon">📞</div>
           <div class="btn-outline-text">
@@ -490,7 +603,7 @@ footer{background:var(--blk);border-top:1px solid rgba(255,255,255,.06);padding:
     <div class="hero-promo">
       <div class="hero-promo-badge">🎁 Акция для новых клиентов</div>
       <h3>Первые <em>10 ТО</em><br>бесплатно</h3>
-      <p>Привезите 10 автомобилей на ТО — оплатите только расходники по оптовым ценам. Никакой оплаты за работу. Проверьте нас в деле без риска.</p>
+      <p>Оплатите только расходники по оптовым ценам — работу берём на себя. Убедитесь в качестве без риска.</p>
       <div class="hero-promo-form">
         <input class="promo-input" id="promoName" type="text" placeholder="Ваше имя">
         <input class="promo-input" id="promoPhone" type="tel" placeholder="Телефон *">
@@ -504,34 +617,73 @@ footer{background:var(--blk);border-top:1px solid rgba(255,255,255,.06);padding:
 <!-- STATS BAR -->
 <div class="stats-bar">
   <div class="stat-item">
-    <div class="stat-val"><em>15 дней</em></div>
-    <div class="stat-lbl">постоплата — авто зарабатывают, пока вы не платили</div>
+    <div class="stat-val"><em>1 000+</em></div>
+    <div class="stat-lbl">автомобилей обслуживаем каждый месяц</div>
   </div>
   <div class="stat-item">
-    <div class="stat-val"><em>15</em> подъёмников</div>
-    <div class="stat-lbl">нет очередей — весь ваш дневной объём сразу</div>
+    <div class="stat-val"><em>4 000</em> м²</div>
+    <div class="stat-lbl">площадь сервиса — 15 подъёмников, кузовной цех, склад</div>
   </div>
   <div class="stat-item">
-    <div class="stat-val">ТО <em>30 мин</em></div>
-    <div class="stat-lbl">жёсткий регламент — авто возвращается на линию</div>
+    <div class="stat-val">с <em>2018</em></div>
+    <div class="stat-lbl">специализируемся только на автопарках</div>
   </div>
   <div class="stat-item">
-    <div class="stat-val"><em>1 000 ₽</em></div>
-    <div class="stat-lbl">работы — масло + масляный + воздушный фильтр</div>
+    <div class="stat-val"><em>90%</em></div>
+    <div class="stat-lbl">клиентов возвращаются — и приводят других</div>
   </div>
 </div>
 
 <!-- OWNER STRIP -->
-<div class="owner-strip">
-  <div class="owner-strip-inner">
-    <img class="owner-photo" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=160&q=85" alt="Александр">
-    <div class="owner-text">
-      <h3>Александр — основатель ГлавТакси Сервис</h3>
-      <p>В автосервисном бизнесе с 2008 года. В 2018-м построил сервис специально под автопарки: без очередей, 15 подъёмников, ТО за 30 минут, склад расходников под марки такси. <strong>90% клиентов — постоянные.</strong> Решаю вопросы напрямую — звоните лично.</p>
+<section class="owner-section">
+  <div class="owner-inner">
+    <!-- Левая колонка: фото + имя + опыт -->
+    <div class="owner-left">
+      <div class="owner-photo-wrap">
+        <img class="owner-avatar" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=440&q=85" alt="Александр — основатель ГлавТакси Сервис">
+      </div>
+      <div class="owner-name-block">
+        <div class="owner-name">Александр</div>
+        <div class="owner-role">Основатель и директор<br>ГлавТакси Сервис</div>
+      </div>
+      <div class="owner-exp">
+        <div class="owner-exp-num">15+ лет</div>
+        <div class="owner-exp-lbl">в автосервисном бизнесе</div>
+      </div>
     </div>
-    <button class="owner-cta-btn" onclick="openModal('Слово директора — Оставить заявку')">Обсудить условия<br>с директором</button>
+    <!-- Правая колонка: текст -->
+    <div class="owner-right">
+      <div class="owner-tag-line">👤 Слово основателя</div>
+      <h2 class="owner-headline">Мы создали сервис,<br>которого <span class="yl">не было на рынке</span></h2>
+      <div class="owner-story">
+        <p>Я работаю в автосервисном бизнесе с 2008 года. Видел одну и ту же картину: <strong>таксопарки переплачивают и теряют дни простоя</strong> в обычных сервисах, которые не понимают их специфику.</p>
+        <p>В 2018-м построил сервис с нуля — специально под автопарки. Сегодня мы обслуживаем больше 1 000 автомобилей в месяц. <strong>90% клиентов — постоянные.</strong></p>
+      </div>
+      <div class="owner-facts">
+        <div class="owner-fact">
+          <div class="owner-fact-ico">⚡</div>
+          <div><strong>ТО за 30 минут</strong><span>Жёсткий регламент — авто сразу на линии</span></div>
+        </div>
+        <div class="owner-fact">
+          <div class="owner-fact-ico">💳</div>
+          <div><strong>Отсрочка 7 дней</strong><span>Платите после того, как машины вышли на линию</span></div>
+        </div>
+        <div class="owner-fact">
+          <div class="owner-fact-ico">💰</div>
+          <div><strong>ТО — 1 200 ₽</strong><span>Масло + масляный + воздушный фильтр</span></div>
+        </div>
+        <div class="owner-fact">
+          <div class="owner-fact-ico">🏭</div>
+          <div><strong>4 000 м² сервис</strong><span>Кузовной цех, слесарка, 15 подъёмников</span></div>
+        </div>
+      </div>
+      <div class="owner-quote-block">
+        <img class="owner-quote-ava" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=100&q=80" alt="Александр">
+        <div class="owner-quote-text">«Позвоните мне лично — <strong>+7 (901) 147-80-90</strong>. Первые 10 ТО бесплатно — просто проверьте нас в деле.»</div>
+      </div>
+    </div>
   </div>
-</div>
+</section>
 
 <!-- SERVICES -->
 <section class="services" id="services">
@@ -684,34 +836,24 @@ footer{background:var(--blk);border-top:1px solid rgba(255,255,255,.06);padding:
           <td class="col-them"><span class="cross">✗</span> Мультибренд, все подряд</td>
         </tr>
         <tr>
-          <td>Скорость ТО</td>
-          <td class="col-us"><span class="check">✓</span> 30 минут — жёсткий регламент</td>
-          <td class="col-them"><span class="cross">✗</span> «Примерно к обеду» — 2–4 часа</td>
-        </tr>
-        <tr>
-          <td>Очереди</td>
-          <td class="col-us"><span class="check">✓</span> 15 подъёмников — заезжаете сразу</td>
-          <td class="col-them"><span class="cross">✗</span> Запись за 2–3 дня</td>
-        </tr>
-        <tr>
-          <td>Постоплата</td>
-          <td class="col-us"><span class="check">✓</span> 15 дней — платите после выхода машин</td>
-          <td class="col-them"><span class="cross">✗</span> Только предоплата или сразу</td>
-        </tr>
-        <tr>
           <td>Запчасти</td>
           <td class="col-us"><span class="check">✓</span> Склад под Geely, Kia, Haval, Skoda, Hyundai</td>
           <td class="col-them"><span class="cross">✗</span> «Привезём через 3–5 дней»</td>
         </tr>
         <tr>
-          <td>Цена ТО</td>
-          <td class="col-us"><span class="check">✓</span> 1 000 ₽ работы — оптовые расходники</td>
-          <td class="col-them"><span class="cross">✗</span> Цена как для физлица</td>
-        </tr>
-        <tr>
           <td>Договор</td>
           <td class="col-us"><span class="check">✓</span> Корпоративный договор за 1 день</td>
           <td class="col-them"><span class="cross">✗</span> Нет системных условий для парка</td>
+        </tr>
+        <tr>
+          <td>Ответственность</td>
+          <td class="col-us"><span class="check">✓</span> Директор лично контролирует каждый заказ</td>
+          <td class="col-them"><span class="cross">✗</span> Мастер-приёмщик, потом — как повезёт</td>
+        </tr>
+        <tr>
+          <td>НДС</td>
+          <td class="col-us"><span class="check">✓</span> Работаем с НДС, все документы</td>
+          <td class="col-them"><span class="cross">✗</span> Часто без НДС или ИП</td>
         </tr>
       </tbody>
     </table>
@@ -845,9 +987,9 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLb();if(e.key==
 <section class="cta-section" id="cta">
   <div class="cta-inner">
     <div class="cta-left">
-      <h2>Обсудить условия лично с директором сервиса</h2>
-      <p>Александр лично разбирает каждую заявку и предлагает условия под ваш парк. Без менеджеров-посредников.</p>
-      <div class="urgency">Ответим в течение 15 минут</div>
+      <h2>Оставьте заявку — подготовим условия для вашего парка</h2>
+      <p>Корпоративный договор, цены под объём, постоплата 15 дней. Всё согласуем за один звонок — без длинных переговоров.</p>
+      <div class="urgency">Перезвоним в течение 15 минут</div>
     </div>
     <div class="cta-form">
       <input class="f-input" id="ctaName" type="text" placeholder="Ваше имя">
@@ -900,8 +1042,8 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLb();if(e.key==
     <div class="modal-inner">
       <div id="modalForm">
         <div class="modal-tag">🚗 Только для автопарков</div>
-        <div class="modal-title">Обсудить условия лично<br><em>с директором сервиса</em></div>
-        <div class="modal-sub">Александр лично перезвонит в течение 15 минут.</div>
+        <div class="modal-title">Получить<br><em>коммерческое предложение</em></div>
+        <div class="modal-sub">Перезвоним в течение 15 минут — согласуем условия под ваш парк.</div>
         <div class="modal-fields">
           <input class="modal-input" id="mName" type="text" placeholder="Ваше имя">
           <input class="modal-input" id="mPhone" type="tel" placeholder="Телефон *" required>
@@ -912,7 +1054,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLb();if(e.key==
       <div class="modal-success" id="modalSuccess">
         <div class="modal-success-icon">✅</div>
         <div class="modal-success-title">Заявка принята!</div>
-        <div class="modal-success-text">Александр свяжется с вами в течение 15 минут.</div>
+        <div class="modal-success-text">Перезвоним в течение 15 минут.</div>
       </div>
     </div>
   </div>
