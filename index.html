@@ -1424,14 +1424,19 @@ footer a{color:var(--y);text-decoration:none}
 <!-- HEADER -->
 <header>
   <div class="h-logo">
-    <svg width="200" height="46" viewBox="0 0 200 46" xmlns="http://www.w3.org/2000/svg">
-      <rect width="200" height="46" fill="none"/>
-      <text x="4" y="24" font-family="'Unbounded',sans-serif" font-weight="900" font-size="14" fill="#F5C842">ГЛАВТАКСИ</text>
-      <text x="4" y="42" font-family="'Inter',sans-serif" font-weight="600" font-size="11" fill="rgba(255,255,255,0.6)" letter-spacing="3">СЕРВИС</text>
-    </svg>
+    <div style="display:flex;flex-direction:column;gap:2px;">
+      <svg width="200" height="30" viewBox="0 0 200 30" xmlns="http://www.w3.org/2000/svg">
+        <rect width="200" height="30" fill="none"/>
+        <text x="4" y="22" font-family="'Unbounded',sans-serif" font-weight="900" font-size="16" fill="#F5C842">ГЛАВТАКСИ СЕРВИС</text>
+      </svg>
+      <div style="font-family:'Inter',sans-serif;font-size:10px;font-weight:600;color:rgba(255,255,255,0.45);letter-spacing:1px;padding-left:4px;">Сервис для таксопарков и каршеринга</div>
+    </div>
   </div>
   <div class="h-phone">
-    <a href="tel:+79011478090">+7 (901) 147-80-90</a>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;">
+      <a href="tel:+79011478090">+7 (901) 147-80-90</a>
+      <span style="font-size:10px;color:rgba(255,255,255,0.4);font-weight:500;">Пн–Вс, 8:00–22:00</span>
+    </div>
     <div class="h-messengers">
       <a href="https://wa.me/79011478090" class="h-messenger wa" target="_blank" title="WhatsApp">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
@@ -1454,98 +1459,11 @@ footer a{color:var(--y);text-decoration:none}
 
   <div class="hero-inner">
     <div class="hero-left">
-      <div class="hero-kicker">🔧 Только для бизнеса · Москва</div>
+      <div class="hero-kicker">🔧 Только для автопарков · B2B · Москва</div>
 
-      <h1>Сервис для<br><span class="h1-flip-scene"><span class="h1-flip-track" id="h1Track"></span></span><br><span class="yl">в Москве</span></h1>
-<style>
-.h1-flip-scene{
-  display:inline-block;
-  perspective:600px;
-  vertical-align:baseline;
-  overflow:hidden;
-  line-height:1.1;
-}
-.h1-flip-track{
-  display:inline-block;
-  position:relative;
-  white-space:nowrap;
-  transform-style:preserve-3d;
-  transition:none;
-}
-.h1-flip-track span{
-  display:block;
-  color:var(--y);
-  font:inherit;
-  font-family:inherit;
-  font-weight:inherit;
-  line-height:1.1;
-  backface-visibility:hidden;
-}
-.h1-flip-track span.h1-current{
-  position:relative;
-}
-.h1-flip-track span.h1-next{
-  position:absolute;
-  top:0;left:0;
-  transform:rotateX(-90deg) translateZ(0.55em);
-  transform-origin:top center;
-}
-.h1-flip-track.flipping span.h1-current{
-  animation:flip-out .45s cubic-bezier(.4,0,.2,1) forwards;
-}
-.h1-flip-track.flipping span.h1-next{
-  animation:flip-in .45s cubic-bezier(.4,0,.2,1) .05s forwards;
-}
-@keyframes flip-out{
-  0%  {transform:rotateX(0deg) translateZ(0);opacity:1;}
-  100%{transform:rotateX(90deg) translateZ(0.55em);opacity:0;}
-}
-@keyframes flip-in{
-  0%  {transform:rotateX(-90deg) translateZ(0.55em);opacity:0;}
-  100%{transform:rotateX(0deg) translateZ(0);opacity:1;}
-}
-</style>
-<script>
-(function(){
-  const words=['таксопарков','каршеринга','прокатных компаний'];
-  let idx=0;
-  const track=document.getElementById('h1Track');
+      <h1>Сервис технического<br>обслуживания для<br><span class="yl">таксопарков</span></h1>
 
-  // Init first word
-  const first=document.createElement('span');
-  first.className='h1-current';
-  first.textContent=words[0];
-  track.appendChild(first);
-
-  function flip(){
-    idx=(idx+1)%words.length;
-    const cur=track.querySelector('.h1-current');
-    const next=document.createElement('span');
-    next.className='h1-next';
-    next.textContent=words[idx];
-
-    // Size the track to the wider of current/next to avoid layout shift
-    const curW=cur.offsetWidth;
-    track.style.minWidth=curW+'px';
-
-    track.appendChild(next);
-    track.classList.add('flipping');
-
-    setTimeout(function(){
-      track.classList.remove('flipping');
-      cur.remove();
-      next.className='h1-current';
-      next.style.transform='';
-      next.style.opacity='';
-      track.style.minWidth='';
-    },550);
-  }
-
-  setInterval(flip,2800);
-})();
-</script>
-
-      <div class="hero-sub-title">Уровень премиального сервиса<br>по ценам гаража!</div>
+      <div class="hero-sub-title">Только для автопарков.<br>ТО за 30 минут · 1 000 ₽ · Постоплата 15 дней</div>
 
       <div class="hero-utp">
         <div class="hero-utp-item">
@@ -1665,8 +1583,8 @@ footer a{color:var(--y);text-decoration:none}
   <div class="s-tag">Узнаёте себя?</div>
   <h2 class="s-h2">Пока машина не на линии —<br>вы теряете деньги</h2>
   <p class="pain-intro">
-    Мы поговорили с владельцами 40+ таксопарков. Вот что они говорят о своём сервисе.
-    <em>Это не жалобы — это убытки в рублях каждый день.</em>
+    Каждый таксопарк и каршеринг-оператор сталкивается с одними и теми же проблемами в обычных сервисах.
+    <em>Это конкретные убытки в рублях каждый день.</em>
   </p>
 
   <div class="pain-grid">
@@ -2340,8 +2258,6 @@ function validatePhone(phone) {
 async function submitCTA(){
   var name    = document.getElementById('ctaName').value.trim();
   var phone   = document.getElementById('ctaPhone').value.trim();
-  var company = document.getElementById('ctaCompany').value.trim();
-  var cars    = document.getElementById('ctaCars').value.trim();
   var btn     = document.getElementById('ctaSubmit');
 
   if(!phone){ alert('Пожалуйста, укажите телефон'); return; }
@@ -2351,6 +2267,8 @@ async function submitCTA(){
 
   if(!validatePhone(phone)){
     alert('Пожалуйста, введите корректный номер телефона');
+    btn.textContent = 'ОБСУДИТЬ УСЛОВИЯ →';
+    btn.disabled = false;
     return;
   }
   if(!checkRateLimit()) return;
@@ -2359,8 +2277,8 @@ async function submitCTA(){
     source:   'CTA-форма',
     name:     sanitizeInput(name)    || '—',
     phone:    sanitizeInput(phone),
-    company:  sanitizeInput(company) || '—',
-    cars:     sanitizeInput(cars)    || '—',
+    company:  '—',
+    cars:     '—',
     brands:   '—',
     biz:      '—',
     priority: '—'
@@ -2376,8 +2294,7 @@ async function submitCTA(){
   if(typeof globalThis.saveLeadToFirebase === 'function'){
     var ok = await globalThis.saveLeadToFirebase(data);
     btn.textContent = '✓ Заявка принята!';
-    // Очищаем форму
-    ['ctaName','ctaPhone','ctaCompany','ctaCars'].forEach(function(id){
+    ['ctaName','ctaPhone'].forEach(function(id){
       var el = document.getElementById(id); if(el) el.value = '';
     });
   } else {
@@ -2431,16 +2348,14 @@ function quizSubmit(){
 <!-- CTA STRIP -->
 <section class="cta-strip" id="cta">
   <div>
-    <h2>Оставьте заявку — рассчитаем стоимость для вашего парка</h2>
-    <p>Подготовим коммерческое предложение под ваши марки автомобилей и объём. Без обязательств.</p>
-    <div class="urgency">Ответим в течение 1 рабочего часа</div>
+    <h2>Обсудить условия лично с директором сервиса</h2>
+    <p>Александр лично разбирает каждую заявку и предлагает условия под ваш парк. Без менеджеров-посредников.</p>
+    <div class="urgency">Ответим в течение 15 минут</div>
   </div>
   <div class="cta-form" id="ctaForm">
     <input class="f-input" id="ctaName" type="text" placeholder="Ваше имя">
-    <input class="f-input" id="ctaPhone" type="tel" placeholder="Телефон">
-    <input class="f-input" id="ctaCompany" type="text" placeholder="Название компании / парка">
-    <input class="f-input" id="ctaCars" type="text" placeholder="Кол-во автомобилей в парке">
-    <button class="f-submit" id="ctaSubmit" onclick="submitCTA()">ПОЛУЧИТЬ КОММЕРЧЕСКОЕ ПРЕДЛОЖЕНИЕ →</button>
+    <input class="f-input" id="ctaPhone" type="tel" placeholder="Телефон *">
+    <button class="f-submit" id="ctaSubmit" onclick="submitCTA()">ОБСУДИТЬ УСЛОВИЯ →</button>
     <div class="f-hint">Нажимая кнопку, вы соглашаетесь с обработкой данных</div>
   </div>
 </section>
@@ -2518,17 +2433,15 @@ function quizSubmit(){
     <div class="modal-inner">
 
       <div id="modalForm">
-        <div class="modal-tag">🚗 Бесплатная консультация</div>
-        <div class="modal-title">Рассчитаем стоимость<br><em>для вашего парка</em></div>
-        <div class="modal-sub">Оставьте заявку — перезвоним в течение 15 минут и подберём условия под ваш объём.</div>
+        <div class="modal-tag">🚗 Только для автопарков</div>
+        <div class="modal-title">Обсудить условия лично<br><em>с директором сервиса</em></div>
+        <div class="modal-sub">Александр лично перезвонит в течение 15 минут и предложит условия под ваш парк.</div>
         <div class="modal-fields">
           <input class="modal-input" id="mName"    type="text" placeholder="Ваше имя">
           <input class="modal-input" id="mPhone"   type="tel"  placeholder="Телефон *" required>
-          <input class="modal-input" id="mCompany" type="text" placeholder="Компания / таксопарк">
-          <input class="modal-input" id="mCars"    type="text" placeholder="Кол-во автомобилей">
         </div>
         <button class="modal-submit" id="mSubmit" onclick="submitModal()">
-          🎁 ПОЛУЧИТЬ РАСЧЁТ БЕСПЛАТНО →
+          ОБСУДИТЬ УСЛОВИЯ →
         </button>
         <div class="modal-hint">Нажимая кнопку, вы соглашаетесь с обработкой персональных данных</div>
       </div>
@@ -2572,8 +2485,6 @@ document.addEventListener('keydown', function(e){
 async function submitModal(){
   var name    = document.getElementById('mName').value.trim();
   var phone   = document.getElementById('mPhone').value.trim();
-  var company = document.getElementById('mCompany').value.trim();
-  var cars    = document.getElementById('mCars').value.trim();
   var source  = document.getElementById('leadModal').dataset.source || 'Всплывающая форма';
   var btn     = document.getElementById('mSubmit');
 
@@ -2593,8 +2504,8 @@ async function submitModal(){
     source:   sanitizeInput(source),
     name:     sanitizeInput(name)    || '—',
     phone:    sanitizeInput(phone),
-    company:  sanitizeInput(company) || '—',
-    cars:     sanitizeInput(cars)    || '—',
+    company:  '—',
+    cars:     '—',
     brands:   '—',
     biz:      '—',
     priority: '—'
@@ -2613,7 +2524,7 @@ async function submitModal(){
   document.getElementById('modalForm').style.display = 'none';
   document.getElementById('modalSuccess').style.display = 'block';
   // Очистить поля
-  ['mName','mPhone','mCompany','mCars'].forEach(function(id){
+  ['mName','mPhone'].forEach(function(id){
     var el = document.getElementById(id); if(el) el.value = '';
   });
   // Авто-закрыть через 3 сек
