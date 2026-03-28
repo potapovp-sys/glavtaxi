@@ -80,7 +80,7 @@ header{
 .hero-bg img{width:100%;height:100%;object-fit:cover;object-position:center 40%;display:block;}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(105deg,rgba(8,8,8,.93) 0%,rgba(8,8,8,.76) 52%,rgba(8,8,8,.38) 100%);}
 .hero-line{position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--y);}
-.hero-inner{position:relative;z-index:2;max-width:1200px;margin:0 auto;padding:72px 40px;width:100%;display:grid;grid-template-columns:1fr 400px;gap:56px;align-items:center;}
+.hero-inner{position:relative;z-index:2;max-width:1200px;margin:0 auto;padding:72px 40px;width:100%;}
 .hero-tag{display:inline-flex;align-items:center;gap:7px;background:rgba(245,200,66,.1);border:1px solid rgba(245,200,66,.3);color:var(--y);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:6px 14px;border-radius:var(--r);margin-bottom:22px;}
 .hero-tag::before{content:'';width:6px;height:6px;background:var(--y);border-radius:50%;animation:blink 1.8s infinite;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
@@ -104,44 +104,94 @@ header{
 .hero-proof-item{font-size:11px;color:rgba(255,255,255,.32);display:flex;align-items:center;gap:4px;font-weight:500;}
 .hero-proof-item::before{content:'✓';color:var(--y);font-size:10px;}
 
-/* Правая колонка Hero — акция */
-.hero-promo{
-  background:rgba(245,200,66,0.07);
-  border:1.5px solid rgba(245,200,66,0.25);
-  border-radius:4px;padding:28px;
+/* ── FLOATING PROMO PANEL ── */
+.float-panel{
+  position:fixed;
+  right:0;top:50%;
+  transform:translateY(-50%);
+  z-index:500;
+  display:flex;align-items:stretch;
 }
-.hero-promo-badge{
-  display:inline-flex;align-items:center;gap:6px;
+/* Таб-триггер */
+.float-tab{
+  writing-mode:vertical-rl;
+  text-orientation:mixed;
+  background:var(--y);color:var(--blk);
+  font-family:'Unbounded',sans-serif;
+  font-size:11px;font-weight:900;
+  letter-spacing:1px;
+  padding:20px 10px;
+  cursor:pointer;
+  border-radius:4px 0 0 4px;
+  user-select:none;
+  transition:.2s;
+  white-space:nowrap;
+  display:flex;align-items:center;gap:8px;
+}
+.float-tab:hover{background:var(--yd);}
+.float-tab .tab-ico{writing-mode:horizontal-tb;font-size:14px;}
+/* Тело панели */
+.float-body{
+  width:0;overflow:hidden;
+  background:var(--blk);
+  border:1px solid rgba(245,200,66,.25);
+  border-right:none;
+  border-radius:4px 0 0 4px;
+  transition:width .35s cubic-bezier(.22,1,.36,1);
+  box-shadow:-8px 0 40px rgba(0,0,0,.4);
+}
+.float-panel.open .float-body{width:280px;}
+.float-panel.open .float-tab{border-radius:0;}
+.float-body-inner{
+  width:280px;padding:24px 22px;
+  opacity:0;transition:opacity .2s ease .1s;
+}
+.float-panel.open .float-body-inner{opacity:1;}
+.float-accent{height:3px;background:linear-gradient(90deg,var(--y),var(--yd));margin:-24px -22px 20px;}
+.float-badge{
+  display:inline-flex;align-items:center;gap:5px;
   background:var(--y);color:var(--blk);
   font-family:'Unbounded',sans-serif;font-size:9px;font-weight:900;
-  letter-spacing:1.5px;text-transform:uppercase;
-  padding:5px 12px;border-radius:var(--r);margin-bottom:16px;
+  letter-spacing:1px;text-transform:uppercase;
+  padding:4px 10px;border-radius:var(--r);margin-bottom:12px;
 }
-.hero-promo h3{
+.float-title{
   font-family:'Unbounded',sans-serif;
-  font-size:18px;font-weight:900;color:#fff;
-  line-height:1.2;margin-bottom:10px;
+  font-size:16px;font-weight:900;color:#fff;
+  line-height:1.2;margin-bottom:8px;
 }
-.hero-promo h3 em{color:var(--y);font-style:normal;}
-.hero-promo p{font-size:13px;color:rgba(255,255,255,.45);line-height:1.6;margin-bottom:20px;}
-.hero-promo-form{display:flex;flex-direction:column;gap:8px;}
-.promo-input{
+.float-title em{color:var(--y);font-style:normal;}
+.float-sub{font-size:12px;color:rgba(255,255,255,.4);line-height:1.5;margin-bottom:16px;}
+.float-input{
   width:100%;background:rgba(255,255,255,.07);
   border:1.5px solid rgba(255,255,255,.12);
-  border-radius:var(--r);padding:12px 14px;
+  border-radius:var(--r);padding:11px 13px;
   font-family:'Inter',sans-serif;font-size:13px;color:#fff;
-  outline:none;transition:.2s;
+  outline:none;transition:.2s;box-sizing:border-box;
+  margin-bottom:8px;
 }
-.promo-input:focus{border-color:var(--y);background:rgba(255,255,255,.1);}
-.promo-input::placeholder{color:rgba(255,255,255,.25);}
-.promo-submit{
+.float-input:focus{border-color:var(--y);background:rgba(255,255,255,.1);}
+.float-input::placeholder{color:rgba(255,255,255,.25);}
+.float-submit{
   width:100%;background:var(--y);color:var(--blk);
-  border:none;padding:14px;
-  font-family:'Unbounded',sans-serif;font-weight:900;font-size:11px;
-  border-radius:var(--r);cursor:pointer;transition:.2s;letter-spacing:.3px;
+  border:none;padding:13px;
+  font-family:'Unbounded',sans-serif;font-weight:900;font-size:10px;
+  border-radius:var(--r);cursor:pointer;transition:.2s;
+  letter-spacing:.5px;
 }
-.promo-submit:hover{background:var(--yd);}
-.promo-hint{font-size:10px;color:rgba(255,255,255,.25);text-align:center;margin-top:4px;}
+.float-submit:hover{background:var(--yd);}
+.float-hint{font-size:10px;color:rgba(255,255,255,.25);text-align:center;margin-top:8px;}
+.float-close{
+  position:absolute;top:8px;right:8px;
+  width:22px;height:22px;border-radius:50%;
+  background:rgba(255,255,255,.08);border:none;
+  color:rgba(255,255,255,.4);font-size:12px;
+  cursor:pointer;transition:.2s;
+  display:none;align-items:center;justify-content:center;
+}
+.float-panel.open .float-close{display:flex;}
+.float-close:hover{background:rgba(255,255,255,.15);color:#fff;}
+@media(max-width:768px){.float-panel{display:none;}}
 
 /* ── STATS BAR ── */
 .stats-bar{background:var(--dark);display:grid;grid-template-columns:repeat(4,1fr);border-top:3px solid var(--y);}
@@ -175,86 +225,62 @@ header{
 /* ── OWNER SECTION ── */
 .owner-section{
   background:#fff;
-  padding:64px 40px;
+  padding:72px 40px;
   border-bottom:1px solid var(--border);
 }
 .owner-inner{
   max-width:1120px;margin:0 auto;
   display:grid;
-  grid-template-columns:320px 1fr;
-  gap:56px;align-items:start;
+  grid-template-columns:280px 1fr;
+  gap:64px;align-items:center;
 }
-.owner-left{
-  display:flex;flex-direction:column;align-items:center;
-  text-align:center;
-}
-.owner-photo-wrap{position:relative;margin-bottom:20px;}
+.owner-left{text-align:center;}
 .owner-avatar{
   width:220px;height:220px;
   border-radius:50%;object-fit:cover;object-position:top center;
   border:4px solid #fff;
-  box-shadow:0 0 0 5px var(--y),0 12px 40px rgba(0,0,0,.12);
-  display:block;
+  box-shadow:0 0 0 5px var(--y),0 16px 48px rgba(0,0,0,.12);
+  display:block;margin:0 auto 16px;
 }
-.owner-name-block{margin-bottom:16px;}
-.owner-name{font-family:'Unbounded',sans-serif;font-size:20px;font-weight:900;color:var(--blk);margin-bottom:4px;}
-.owner-role{font-size:13px;color:var(--mut);font-weight:500;line-height:1.4;}
-.owner-exp{
-  display:inline-flex;flex-direction:column;align-items:center;
-  background:var(--blk);padding:14px 24px;border-radius:var(--r);
-  width:100%;
-}
-.owner-exp-num{font-family:'Unbounded',sans-serif;font-size:26px;font-weight:900;color:var(--y);line-height:1;}
-.owner-exp-lbl{font-size:10px;color:rgba(255,255,255,.45);font-weight:600;letter-spacing:.8px;text-transform:uppercase;margin-top:4px;}
+.owner-name{font-family:'Unbounded',sans-serif;font-size:18px;font-weight:900;color:var(--blk);margin-bottom:4px;}
+.owner-role{font-size:12px;color:var(--mut);font-weight:500;line-height:1.5;}
 .owner-right{}
-.owner-tag-line{
-  display:inline-flex;align-items:center;gap:7px;
-  background:rgba(245,200,66,.1);border:1px solid rgba(245,200,66,.3);
-  color:var(--yd);font-size:10px;font-weight:700;
-  letter-spacing:2px;text-transform:uppercase;
-  padding:5px 13px;border-radius:var(--r);margin-bottom:18px;
-}
 .owner-headline{
   font-family:'Unbounded',sans-serif;
   font-size:clamp(20px,2.2vw,28px);font-weight:900;
-  color:var(--blk);line-height:1.2;margin-bottom:20px;
+  color:var(--blk);line-height:1.2;margin-bottom:16px;
 }
 .owner-headline .yl{color:var(--yd);}
 .owner-story{
-  font-size:14px;color:#444;line-height:1.8;
-  margin-bottom:28px;
+  font-size:14px;color:#555;line-height:1.8;
+  margin-bottom:28px;max-width:560px;
 }
-.owner-story p{margin-bottom:14px;}
-.owner-story p:last-child{margin-bottom:0;}
 .owner-story strong{color:var(--blk);}
-.owner-facts{
-  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+.owner-utp{
+  display:flex;gap:0;
   margin-bottom:28px;
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  overflow:hidden;
 }
-.owner-fact{
-  background:var(--bg);border:1px solid var(--border);
-  border-left:3px solid var(--y);
-  padding:14px 16px;border-radius:var(--r);
-  display:flex;gap:10px;align-items:flex-start;
+.owner-utp-item{
+  flex:1;text-align:center;padding:18px 12px;
+  border-right:1px solid var(--border);
 }
-.owner-fact-ico{font-size:18px;line-height:1;flex-shrink:0;margin-top:1px;}
-.owner-fact strong{display:block;font-size:13px;font-weight:700;color:var(--blk);margin-bottom:2px;}
-.owner-fact span{font-size:12px;color:var(--mut);}
-.owner-quote-block{
-  background:var(--blk);border-radius:var(--r);
-  padding:20px 24px;
-  display:flex;align-items:center;gap:16px;
+.owner-utp-item:last-child{border-right:none;}
+.owner-utp-val{
+  font-family:'Unbounded',sans-serif;
+  font-size:20px;font-weight:900;color:var(--blk);
+  line-height:1;margin-bottom:4px;display:block;
 }
-.owner-quote-ava{
-  width:44px;height:44px;min-width:44px;
-  border-radius:50%;object-fit:cover;
-  border:2px solid var(--y);
+.owner-utp-lbl{font-size:11px;color:var(--mut);font-weight:500;display:block;}
+.owner-cta-btn{
+  background:var(--blk);color:var(--y);
+  border:none;padding:14px 28px;
+  font-family:'Unbounded',sans-serif;font-weight:800;font-size:12px;
+  border-radius:var(--r);cursor:pointer;transition:.2s;
 }
-.owner-quote-text{
-  font-size:13px;color:rgba(255,255,255,.6);
-  line-height:1.6;font-style:italic;
-}
-.owner-quote-text strong{color:var(--y);font-style:normal;}
+.owner-cta-btn:hover{background:#333;}
 
 /* ── SECTION HEAD ── */
 .section-head{max-width:1120px;margin:0 auto 44px;}
@@ -268,51 +294,152 @@ header{
 
 /* ── SERVICES ── */
 .services{padding:72px 40px;background:var(--bg);}
-.srv-grid{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:repeat(2,1fr);gap:3px;}
-.srv-card{background:#fff;border:1px solid var(--border);overflow:hidden;}
-.srv-card-top{padding:28px 28px 0;cursor:pointer;display:flex;align-items:flex-start;gap:16px;justify-content:space-between;}
-.srv-card-top:hover .srv-name{color:var(--yd);}
-.srv-left{display:flex;gap:16px;align-items:flex-start;}
-.srv-icon-wrap{width:44px;height:44px;min-width:44px;background:var(--y);border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:20px;}
-.srv-name{font-family:'Unbounded',sans-serif;font-size:15px;font-weight:900;color:var(--blk);line-height:1.2;margin-bottom:6px;transition:.2s;}
-.srv-desc-short{font-size:13px;color:var(--mut);line-height:1.55;}
-.srv-toggle{width:32px;height:32px;min-width:32px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--mut);transition:.2s;cursor:pointer;flex-shrink:0;margin-top:2px;}
-.srv-card.open .srv-toggle{background:var(--blk);color:var(--y);border-color:var(--blk);transform:rotate(45deg);}
-.srv-cta-row{padding:16px 28px 24px;display:flex;gap:10px;align-items:center;}
-.srv-price-badge{font-family:'Unbounded',sans-serif;font-size:14px;font-weight:900;color:var(--blk);}
-.srv-price-badge em{color:var(--yd);font-style:normal;}
-.srv-btn{background:var(--blk);color:var(--y);border:none;padding:10px 18px;font-family:'Unbounded',sans-serif;font-weight:700;font-size:11px;border-radius:var(--r);cursor:pointer;transition:.2s;white-space:nowrap;}
+.srv-grid{
+  max-width:1120px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(2,1fr);
+  gap:24px;
+}
+.srv-card{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:4px;
+  overflow:hidden;
+  transition:.25s ease;
+}
+.srv-card:hover{box-shadow:0 8px 32px rgba(0,0,0,.08);transform:translateY(-3px);}
+.srv-photo{
+  width:100%;aspect-ratio:16/9;
+  overflow:hidden;
+}
+.srv-photo img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform .5s ease;
+  filter:brightness(.9);
+}
+.srv-card:hover .srv-photo img{transform:scale(1.04);filter:brightness(1);}
+.srv-body{padding:24px 28px;}
+.srv-name{
+  font-family:'Unbounded',sans-serif;
+  font-size:16px;font-weight:900;color:var(--blk);
+  line-height:1.2;margin-bottom:10px;
+}
+.srv-desc{
+  font-size:13px;color:var(--mut);
+  line-height:1.65;margin-bottom:20px;
+}
+.srv-footer{
+  display:flex;align-items:center;
+  justify-content:space-between;gap:12px;
+  padding-top:16px;
+  border-top:1px solid var(--border);
+}
+.srv-price{
+  font-family:'Unbounded',sans-serif;
+  font-size:13px;font-weight:700;color:var(--mut);
+}
+.srv-price em{color:var(--blk);font-style:normal;}
+.srv-btn{
+  background:var(--blk);color:var(--y);
+  border:none;padding:10px 20px;
+  font-family:'Unbounded',sans-serif;
+  font-weight:700;font-size:11px;
+  border-radius:var(--r);cursor:pointer;
+  transition:.2s;white-space:nowrap;flex-shrink:0;
+}
 .srv-btn:hover{background:#333;}
-/* Раскрывающийся прайс */
-.srv-price-panel{display:none;border-top:1px solid var(--border);margin-top:4px;}
-.srv-card.open .srv-price-panel{display:block;}
-.srv-price-list{width:100%;border-collapse:collapse;}
-.srv-price-list tr{border-bottom:1px solid var(--border);}
-.srv-price-list tr:last-child{border-bottom:none;}
-.srv-price-list td{padding:10px 28px;font-size:13px;}
-.srv-price-list td:first-child{color:var(--txt);font-weight:500;}
-.srv-price-list td:last-child{text-align:right;font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;color:var(--blk);white-space:nowrap;}
-.srv-price-list tr:nth-child(odd) td{background:rgba(0,0,0,.018);}
 
-/* ── COMPARISON TABLE ── */
-.compare-section{padding:72px 40px;background:var(--blk);}
-.compare-section .s-tag{color:var(--y);}
-.compare-section .s-h2{color:#fff;}
-.compare-section .s-sub{color:rgba(255,255,255,.4);}
-.compare-wrap{max-width:1120px;margin:0 auto;}
-.compare-table{width:100%;border-collapse:separate;border-spacing:0;margin-top:40px;}
-.compare-table th{padding:14px 24px;font-family:'Unbounded',sans-serif;font-size:11px;font-weight:800;letter-spacing:1px;text-align:left;}
-.compare-table th:first-child{color:rgba(255,255,255,.35);width:35%;}
-.compare-table th.col-us{background:var(--y);color:var(--blk);border-radius:4px 4px 0 0;text-align:center;}
-.compare-table th.col-them{color:rgba(255,255,255,.3);text-align:center;}
-.compare-table td{padding:14px 24px;border-bottom:1px solid rgba(255,255,255,.06);font-size:13px;font-weight:500;vertical-align:middle;}
-.compare-table tr:last-child td{border-bottom:none;}
-.compare-table td:first-child{color:rgba(255,255,255,.45);}
-.compare-table td.col-us{background:rgba(245,200,66,.07);text-align:center;color:#fff;font-weight:600;}
-.compare-table td.col-them{text-align:center;color:rgba(255,255,255,.3);}
-.check{color:var(--y);font-size:16px;}
-.cross{color:rgba(255,80,80,.6);font-size:16px;}
-.compare-cta{margin-top:32px;text-align:center;}
+/* ── WHY US ── */
+.why-section{padding:80px 40px;background:#fff;}
+.why-grid{
+  max-width:1120px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:2px;margin-top:48px;
+}
+.why-card{
+  background:var(--bg);
+  padding:36px 32px;
+  position:relative;
+  overflow:hidden;
+  transition:.25s;
+}
+.why-card::before{
+  content:'';
+  position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--y);
+  transform:scaleX(0);transform-origin:left;
+  transition:.3s;
+}
+.why-card:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.07);}
+.why-card:hover::before{transform:scaleX(1);}
+.why-val{
+  font-family:'Unbounded',sans-serif;
+  font-size:36px;font-weight:900;color:var(--blk);
+  line-height:1;margin-bottom:8px;
+}
+.why-val em{color:var(--y);font-style:normal;}
+.why-title{
+  font-family:'Unbounded',sans-serif;
+  font-size:14px;font-weight:800;color:var(--blk);
+  margin-bottom:10px;line-height:1.3;
+}
+.why-desc{font-size:13px;color:var(--mut);line-height:1.65;}
+
+/* ── REVIEWS ── */
+.reviews-section{padding:80px 40px;background:var(--dark);}
+.reviews-section .s-tag{color:var(--y);}
+.reviews-section .s-h2{color:#fff;}
+.reviews-head{
+  max-width:1120px;margin:0 auto 48px;
+  display:flex;align-items:flex-end;justify-content:space-between;gap:24px;
+}
+.reviews-rating-summary{
+  display:flex;align-items:center;gap:16px;flex-shrink:0;
+}
+.reviews-big-score{
+  font-family:'Unbounded',sans-serif;
+  font-size:48px;font-weight:900;color:#fff;line-height:1;
+}
+.reviews-stars-col{}
+.reviews-stars{color:var(--y);font-size:18px;letter-spacing:2px;line-height:1;margin-bottom:4px;}
+.reviews-count{font-size:12px;color:rgba(255,255,255,.35);font-weight:500;}
+.reviews-grid{
+  max-width:1120px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+.review-card{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:4px;
+  padding:24px;
+  transition:.2s;
+}
+.review-card:hover{background:rgba(255,255,255,.07);border-color:rgba(245,200,66,.2);}
+.review-top{
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:14px;
+}
+.review-avatar{
+  width:44px;height:44px;min-width:44px;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Unbounded',sans-serif;
+  font-size:16px;font-weight:900;color:#fff;
+  flex-shrink:0;
+}
+.review-meta{}
+.review-name{font-size:14px;font-weight:700;color:#fff;margin-bottom:2px;}
+.review-company{font-size:11px;color:rgba(255,255,255,.35);font-weight:500;}
+.review-stars{color:var(--y);font-size:13px;letter-spacing:1px;margin-bottom:12px;}
+.review-text{font-size:13px;color:rgba(255,255,255,.55);line-height:1.7;}
+.review-date{font-size:11px;color:rgba(255,255,255,.2);margin-top:14px;font-weight:500;}
+.review-source{
+  display:flex;align-items:center;gap:6px;
+  margin-top:14px;padding-top:14px;
+  border-top:1px solid rgba(255,255,255,.06);
+  font-size:11px;color:rgba(255,255,255,.25);font-weight:600;
+}
+.review-source-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
 
 /* ── GALLERY ── */
 .gallery-section{padding:72px 40px;background:var(--dark);}
@@ -469,26 +596,30 @@ footer{background:var(--blk);border-top:1px solid rgba(255,255,255,.06);padding:
 /* ── RESPONSIVE ── */
 @media(max-width:1024px){
   .h-nav{display:none;}
-  .srv-grid{grid-template-columns:1fr;}
-  .compare-table th.col-them,.compare-table td.col-them{display:none;}
-  .owner-strip-inner{grid-template-columns:auto 1fr;}
-  .owner-cta-btn{display:none;}
+  .srv-grid{grid-template-columns:1fr 1fr;}
+  .owner-inner{grid-template-columns:200px 1fr;gap:40px;}
+  .owner-avatar{width:160px;height:160px;}
 }
 @media(max-width:768px){
   header{padding:0 16px;height:56px;}
   .h-hours{display:none;}.h-messengers{display:none;}
   .hero-inner{grid-template-columns:1fr;gap:32px;padding:48px 20px 56px;}
-  .hero-promo{display:none;}
   .hero-utp-cards{grid-template-columns:1fr 1fr;}
   .stats-bar{grid-template-columns:1fr 1fr;}
   .owner-section{padding:48px 20px;}
-  .owner-inner{grid-template-columns:1fr;gap:32px;}
-  .owner-left{flex-direction:row;text-align:left;align-items:center;gap:24px;}
-  .owner-avatar{width:110px;height:110px;}
-  .owner-exp{display:none;}
-  .owner-facts{grid-template-columns:1fr;}
+  .owner-inner{grid-template-columns:1fr;gap:28px;text-align:center;}
+  .owner-avatar{width:140px;height:140px;}
+  .owner-utp{flex-direction:column;border:none;gap:0;}
+  .owner-utp-item{border-right:none;border-bottom:1px solid var(--border);padding:14px 12px;}
+  .owner-utp-item:last-child{border-bottom:none;}
+  .owner-story{max-width:100%;}
   .services{padding:48px 20px;}
-  .compare-section{padding:48px 20px;}
+  .srv-grid{grid-template-columns:1fr;gap:16px;}
+  .why-grid{grid-template-columns:1fr;}
+  .reviews-grid{grid-template-columns:1fr;}
+  .reviews-head{flex-direction:column;align-items:flex-start;gap:16px;}
+  .why-section{padding:48px 20px;}
+  .reviews-section{padding:48px 20px;}
   .gallery-section{padding:48px 20px;}
   .gallery-grid{grid-template-columns:repeat(2,1fr);}
   .quiz-section{padding:48px 20px;}
@@ -511,11 +642,7 @@ footer{background:var(--blk);border-top:1px solid rgba(255,255,255,.06);padding:
   .hero-utp-val{font-size:18px;}
   .stat-val{font-size:20px;}
   .stats-bar{grid-template-columns:1fr 1fr;}
-  .owner-left{flex-direction:column;text-align:center;align-items:center;}
-  .owner-avatar{width:150px;height:150px;}
-  .owner-exp{display:flex;}
-  .owner-facts{grid-template-columns:1fr;}
-  .owner-quote-block{flex-direction:column;text-align:center;}
+  .srv-grid{grid-template-columns:1fr;}
   .gallery-grid{grid-template-columns:repeat(2,1fr);}
   .quiz-options{grid-template-columns:1fr;}
   .quiz-checkboxes{grid-template-columns:repeat(2,1fr);}
@@ -563,7 +690,7 @@ footer{background:var(--blk);border-top:1px solid rgba(255,255,255,.06);padding:
   <div class="hero-inner">
     <div class="hero-left">
       <div class="hero-tag">🔧 Только для автопарков · B2B · Москва</div>
-      <h1>Сервис технического<br>обслуживания<br>для <span class="yl">таксопарков</span></h1>
+      <h1>АВТОСЕРВИС<br>для <span class="yl">таксопарков</span></h1>
       <div class="hero-utp-cards">
         <div class="hero-utp-card">
           <div class="hero-utp-val">1 200 ₽</div>
@@ -599,18 +726,6 @@ footer{background:var(--blk);border-top:1px solid rgba(255,255,255,.06);padding:
         <div class="hero-proof-item">С 2018 года</div>
       </div>
     </div>
-    <!-- Блок акции справа (десктоп) -->
-    <div class="hero-promo">
-      <div class="hero-promo-badge">🎁 Акция для новых клиентов</div>
-      <h3>Первые <em>10 ТО</em><br>бесплатно</h3>
-      <p>Оплатите только расходники по оптовым ценам — работу берём на себя. Убедитесь в качестве без риска.</p>
-      <div class="hero-promo-form">
-        <input class="promo-input" id="promoName" type="text" placeholder="Ваше имя">
-        <input class="promo-input" id="promoPhone" type="tel" placeholder="Телефон *">
-        <button class="promo-submit" onclick="submitPromo()">ЗАБРАТЬ 10 ТО БЕСПЛАТНО →</button>
-        <div class="promo-hint">Перезвоним в течение 15 минут</div>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -634,53 +749,23 @@ footer{background:var(--blk);border-top:1px solid rgba(255,255,255,.06);padding:
   </div>
 </div>
 
-<!-- OWNER STRIP -->
+<!-- OWNER -->
 <section class="owner-section">
   <div class="owner-inner">
-    <!-- Левая колонка: фото + имя + опыт -->
     <div class="owner-left">
-      <div class="owner-photo-wrap">
-        <img class="owner-avatar" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=440&q=85" alt="Александр — основатель ГлавТакси Сервис">
-      </div>
-      <div class="owner-name-block">
-        <div class="owner-name">Александр</div>
-        <div class="owner-role">Основатель и директор<br>ГлавТакси Сервис</div>
-      </div>
-      <div class="owner-exp">
-        <div class="owner-exp-num">15+ лет</div>
-        <div class="owner-exp-lbl">в автосервисном бизнесе</div>
-      </div>
+      <img class="owner-avatar" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=440&q=85" alt="Александр — основатель ГлавТакси Сервис">
+      <div class="owner-name">Александр</div>
+      <div class="owner-role">Основатель и директор · с 2008 года</div>
     </div>
-    <!-- Правая колонка: текст -->
     <div class="owner-right">
-      <div class="owner-tag-line">👤 Слово основателя</div>
-      <h2 class="owner-headline">Мы создали сервис,<br>которого <span class="yl">не было на рынке</span></h2>
-      <div class="owner-story">
-        <p>Я работаю в автосервисном бизнесе с 2008 года. Видел одну и ту же картину: <strong>таксопарки переплачивают и теряют дни простоя</strong> в обычных сервисах, которые не понимают их специфику.</p>
-        <p>В 2018-м построил сервис с нуля — специально под автопарки. Сегодня мы обслуживаем больше 1 000 автомобилей в месяц. <strong>90% клиентов — постоянные.</strong></p>
+      <h2 class="owner-headline">Сервис, которого<br><span class="yl">не было на рынке</span></h2>
+      <p class="owner-story">В обычных сервисах таксопарки ждут днями и платят как физлица. В 2018-м я построил сервис с нуля — специально под автопарки. Сегодня обслуживаем больше 1 000 автомобилей в месяц. <strong>90% клиентов — постоянные.</strong></p>
+      <div class="owner-utp">
+        <div class="owner-utp-item"><span class="owner-utp-val">1 200 ₽</span><span class="owner-utp-lbl">стоимость ТО</span></div>
+        <div class="owner-utp-item"><span class="owner-utp-val">30 мин</span><span class="owner-utp-lbl">время ремонта</span></div>
+        <div class="owner-utp-item"><span class="owner-utp-val">7 дней</span><span class="owner-utp-lbl">отсрочка платежа</span></div>
       </div>
-      <div class="owner-facts">
-        <div class="owner-fact">
-          <div class="owner-fact-ico">⚡</div>
-          <div><strong>ТО за 30 минут</strong><span>Жёсткий регламент — авто сразу на линии</span></div>
-        </div>
-        <div class="owner-fact">
-          <div class="owner-fact-ico">💳</div>
-          <div><strong>Отсрочка 7 дней</strong><span>Платите после того, как машины вышли на линию</span></div>
-        </div>
-        <div class="owner-fact">
-          <div class="owner-fact-ico">💰</div>
-          <div><strong>ТО — 1 200 ₽</strong><span>Масло + масляный + воздушный фильтр</span></div>
-        </div>
-        <div class="owner-fact">
-          <div class="owner-fact-ico">🏭</div>
-          <div><strong>4 000 м² сервис</strong><span>Кузовной цех, слесарка, 15 подъёмников</span></div>
-        </div>
-      </div>
-      <div class="owner-quote-block">
-        <img class="owner-quote-ava" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=100&q=80" alt="Александр">
-        <div class="owner-quote-text">«Позвоните мне лично — <strong>+7 (901) 147-80-90</strong>. Первые 10 ТО бесплатно — просто проверьте нас в деле.»</div>
-      </div>
+      <button class="owner-cta-btn" onclick="openModal('Owner — Позвонить директору')">Позвонить директору</button>
     </div>
   </div>
 </section>
@@ -690,176 +775,65 @@ footer{background:var(--blk);border-top:1px solid rgba(255,255,255,.06);padding:
   <div class="section-head">
     <div class="s-tag">Услуги и цены</div>
     <h2 class="s-h2">Полный цикл обслуживания<br>под одной крышей</h2>
-    <p class="s-sub">Нажмите на услугу — раскроется прайс-лист. Все цены — за работу, расходники по оптовым ценам отдельно.</p>
   </div>
-  <div class="srv-grid" id="srvGrid">
+  <div class="srv-grid">
 
-    <!-- ТО -->
-    <div class="srv-card" id="srvTO">
-      <div class="srv-card-top" onclick="toggleSrv('srvTO')">
-        <div class="srv-left">
-          <div class="srv-icon-wrap">🔧</div>
-          <div>
-            <div class="srv-name">Техническое обслуживание</div>
-            <div class="srv-desc-short">Замена масла, фильтров, регламентное ТО — за 30 минут. Склад расходников под Geely, Kia, Haval, Skoda, Hyundai, Москвич.</div>
-          </div>
+    <div class="srv-card">
+      <div class="srv-photo">
+        <img src="https://images.unsplash.com/photo-1615906655593-ad0386982a0f?auto=format&fit=crop&w=800&q=80" alt="Техническое обслуживание">
+      </div>
+      <div class="srv-body">
+        <div class="srv-name">Техническое обслуживание</div>
+        <div class="srv-desc">Замена масла, фильтров — 30 минут, без очередей. Склад расходников под Geely, Kia, Haval, Skoda, Hyundai, Москвич.</div>
+        <div class="srv-footer">
+          <div class="srv-price">от <em>1 200 ₽</em> · 30 минут</div>
+          <button class="srv-btn" onclick="openModal('Услуги — ТО')">Записаться</button>
         </div>
-        <div class="srv-toggle">+</div>
-      </div>
-      <div class="srv-price-panel">
-        <table class="srv-price-list">
-          <tr><td>Замена масла и масляного фильтра</td><td>от 1 000 ₽</td></tr>
-          <tr><td>Замена воздушного фильтра</td><td>от 250 ₽</td></tr>
-          <tr><td>Замена фильтра салона</td><td>от 400 ₽</td></tr>
-          <tr><td>Замена топливного фильтра</td><td>от 500 ₽</td></tr>
-          <tr><td>Замена тормозной жидкости</td><td>от 900 ₽</td></tr>
-          <tr><td>Замена свечей зажигания</td><td>от 800 ₽</td></tr>
-          <tr><td>Диагностика (при ТО)</td><td>Бесплатно</td></tr>
-        </table>
-      </div>
-      <div class="srv-cta-row">
-        <div class="srv-price-badge">от <em>1 000 ₽</em> работы · 30 минут</div>
-        <button class="srv-btn" onclick="openModal('Услуги — ТО')">Записаться</button>
       </div>
     </div>
 
-    <!-- Кузовной -->
-    <div class="srv-card" id="srvKuz">
-      <div class="srv-card-top" onclick="toggleSrv('srvKuz')">
-        <div class="srv-left">
-          <div class="srv-icon-wrap">🚗</div>
-          <div>
-            <div class="srv-name">Кузовной ремонт</div>
-            <div class="srv-desc-short">Собственный цех — рихтовка, сварка, покраска. Специализируемся на восстановлении после ДТП. Акты для страховой.</div>
-          </div>
+    <div class="srv-card">
+      <div class="srv-photo">
+        <img src="https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&w=800&q=80" alt="Кузовной ремонт">
+      </div>
+      <div class="srv-body">
+        <div class="srv-name">Кузовной ремонт</div>
+        <div class="srv-desc">Собственный цех — рихтовка, сварка, покраска. Восстановление после ДТП. Акты для страховой.</div>
+        <div class="srv-footer">
+          <div class="srv-price"><em>1–3 дня</em> · собственный цех</div>
+          <button class="srv-btn" onclick="openModal('Услуги — Кузов')">Записаться</button>
         </div>
-        <div class="srv-toggle">+</div>
-      </div>
-      <div class="srv-price-panel">
-        <table class="srv-price-list">
-          <tr><td>Покраска детали</td><td>от 7 000 ₽</td></tr>
-          <tr><td>Рихтовка детали</td><td>от 2 500 ₽</td></tr>
-          <tr><td>Восстановление геометрии кузова</td><td>от 5 000 ₽</td></tr>
-          <tr><td>Ремонт пластиковых деталей</td><td>от 1 500 ₽</td></tr>
-          <tr><td>Замена автостекла</td><td>от 2 500 ₽</td></tr>
-          <tr><td>Полировка кузова</td><td>от 7 000 ₽</td></tr>
-          <tr><td>Оценка ущерба для страховой</td><td>Бесплатно</td></tr>
-        </table>
-      </div>
-      <div class="srv-cta-row">
-        <div class="srv-price-badge"><em>1–3 дня</em> · собственный цех</div>
-        <button class="srv-btn" onclick="openModal('Услуги — Кузов')">Записаться</button>
       </div>
     </div>
 
-    <!-- Слесарный -->
-    <div class="srv-card" id="srvSles">
-      <div class="srv-card-top" onclick="toggleSrv('srvSles')">
-        <div class="srv-left">
-          <div class="srv-icon-wrap">🛠</div>
-          <div>
-            <div class="srv-name">Слесарный ремонт</div>
-            <div class="srv-desc-short">Подвеска, тормоза, рулевое, двигатель, коробка. Мастера с опытом 10+ лет. Диагностика бесплатно при ремонте.</div>
-          </div>
+    <div class="srv-card">
+      <div class="srv-photo">
+        <img src="https://images.unsplash.com/photo-1643701079732-3b1c7a797e3d?auto=format&fit=crop&w=800&q=80" alt="Слесарный ремонт">
+      </div>
+      <div class="srv-body">
+        <div class="srv-name">Слесарный ремонт</div>
+        <div class="srv-desc">Подвеска, тормоза, рулевое, двигатель. Мастера 10+ лет. Диагностика бесплатно при заказе ремонта.</div>
+        <div class="srv-footer">
+          <div class="srv-price"><em>Бесплатно</em> диагностика</div>
+          <button class="srv-btn" onclick="openModal('Услуги — Слесарка')">Записаться</button>
         </div>
-        <div class="srv-toggle">+</div>
-      </div>
-      <div class="srv-price-panel">
-        <table class="srv-price-list">
-          <tr><td>Диагностика подвески</td><td>Бесплатно</td></tr>
-          <tr><td>Замена амортизатора</td><td>от 2 000 ₽</td></tr>
-          <tr><td>Замена тормозных колодок</td><td>от 1 800 ₽</td></tr>
-          <tr><td>Замена тормозных дисков</td><td>от 1 800 ₽</td></tr>
-          <tr><td>Замена шаровой опоры</td><td>от 1 500 ₽</td></tr>
-          <tr><td>Замена ступичного подшипника</td><td>от 2 500 ₽</td></tr>
-          <tr><td>Сход-развал</td><td>от 2 500 ₽</td></tr>
-          <tr><td>Замена ремня ГРМ</td><td>от 5 000 ₽</td></tr>
-        </table>
-      </div>
-      <div class="srv-cta-row">
-        <div class="srv-price-badge"><em>Бесплатно</em> диагностика при ремонте</div>
-        <button class="srv-btn" onclick="openModal('Услуги — Слесарка')">Записаться</button>
       </div>
     </div>
 
-    <!-- Оклейка -->
-    <div class="srv-card" id="srvOkl">
-      <div class="srv-card-top" onclick="toggleSrv('srvOkl')">
-        <div class="srv-left">
-          <div class="srv-icon-wrap">🎨</div>
-          <div>
-            <div class="srv-name">Оклейка и брендирование</div>
-            <div class="srv-desc-short">По стандартам Яндекс.Такси и каршеринг-операторов. Оклеиваем партиями — 5–20 авто за раз. Антигравий, виниловые плёнки.</div>
-          </div>
+    <div class="srv-card">
+      <div class="srv-photo">
+        <img src="https://images.unsplash.com/photo-1637640125496-31852f042a60?auto=format&fit=crop&w=800&q=80" alt="Оклейка такси">
+      </div>
+      <div class="srv-body">
+        <div class="srv-name">Оклейка и брендирование</div>
+        <div class="srv-desc">По стандартам Яндекс.Такси. Оклеиваем партиями — 5–20 авто за раз. Антигравий, виниловые плёнки.</div>
+        <div class="srv-footer">
+          <div class="srv-price"><em>1 день</em> · скидка от 5 авто</div>
+          <button class="srv-btn" onclick="openModal('Услуги — Оклейка')">Записаться</button>
         </div>
-        <div class="srv-toggle">+</div>
-      </div>
-      <div class="srv-price-panel">
-        <table class="srv-price-list">
-          <tr><td>Брендирование под Яндекс.Такси</td><td>от 3 500 ₽</td></tr>
-          <tr><td>Антигравийная защита (частичная)</td><td>от 4 000 ₽</td></tr>
-          <tr><td>Оклейка виниловой плёнкой</td><td>от 8 000 ₽</td></tr>
-          <tr><td>Оклейка бампера защитной плёнкой</td><td>от 2 500 ₽</td></tr>
-          <tr><td>Нанесение корпоративного стиля парка</td><td>по согласованию</td></tr>
-          <tr><td>Скидка при партии от 5 авто</td><td>-10%</td></tr>
-        </table>
-      </div>
-      <div class="srv-cta-row">
-        <div class="srv-price-badge"><em>1 день</em> · скидка от 5 авто</div>
-        <button class="srv-btn" onclick="openModal('Услуги — Оклейка')">Записаться</button>
       </div>
     </div>
 
-  </div>
-</section>
-
-<!-- COMPARISON TABLE -->
-<section class="compare-section">
-  <div class="compare-wrap">
-    <div class="section-head">
-      <div class="s-tag" style="color:var(--y);">Почему выбирают нас</div>
-      <h2 class="s-h2" style="color:#fff;">Мы vs обычный сервис</h2>
-      <p class="s-sub" style="color:rgba(255,255,255,.4);">Разберём конкретно — что влияет на скорость и стоимость обслуживания вашего парка.</p>
-    </div>
-    <table class="compare-table">
-      <thead>
-        <tr>
-          <th>Критерий</th>
-          <th class="col-us">ГлавТакси Сервис</th>
-          <th class="col-them">Обычный сервис</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Специализация</td>
-          <td class="col-us"><span class="check">✓</span> Только автопарки — знаем вашу специфику</td>
-          <td class="col-them"><span class="cross">✗</span> Мультибренд, все подряд</td>
-        </tr>
-        <tr>
-          <td>Запчасти</td>
-          <td class="col-us"><span class="check">✓</span> Склад под Geely, Kia, Haval, Skoda, Hyundai</td>
-          <td class="col-them"><span class="cross">✗</span> «Привезём через 3–5 дней»</td>
-        </tr>
-        <tr>
-          <td>Договор</td>
-          <td class="col-us"><span class="check">✓</span> Корпоративный договор за 1 день</td>
-          <td class="col-them"><span class="cross">✗</span> Нет системных условий для парка</td>
-        </tr>
-        <tr>
-          <td>Ответственность</td>
-          <td class="col-us"><span class="check">✓</span> Директор лично контролирует каждый заказ</td>
-          <td class="col-them"><span class="cross">✗</span> Мастер-приёмщик, потом — как повезёт</td>
-        </tr>
-        <tr>
-          <td>НДС</td>
-          <td class="col-us"><span class="check">✓</span> Работаем с НДС, все документы</td>
-          <td class="col-them"><span class="cross">✗</span> Часто без НДС или ИП</td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="compare-cta">
-      <button class="btn-primary" style="margin-top:4px;" onclick="openModal('Сравнение — Начать сотрудничество')">Начать сотрудничество →</button>
-    </div>
   </div>
 </section>
 
@@ -867,7 +841,7 @@ footer{background:var(--blk);border-top:1px solid rgba(255,255,255,.06);padding:
 <section class="gallery-section" id="gallery">
   <div class="section-head centered" style="max-width:1120px;margin:0 auto 36px;">
     <div class="s-tag" style="justify-content:center;">Наши работы</div>
-    <h2 class="s-h2" style="color:#fff;">Как мы работаем</h2>
+    <h2 class="s-h2" style="color:#fff;">Галерея</h2>
   </div>
   <div class="gallery-grid" style="max-width:1120px;margin:0 auto;">
     <div class="gal-item" onclick="openLb(0)"><img src="https://images.unsplash.com/photo-1606577924006-27d39b132ae2?auto=format&fit=crop&w=600&q=80" alt="" loading="lazy"></div>
@@ -897,6 +871,175 @@ function closeLbOutside(e){if(e.target===document.getElementById('lb'))closeLb()
 function lbNav(d){lbIdx=(lbIdx+d+lbSrcs.length)%lbSrcs.length;document.getElementById('lb-img').src=lbSrcs[lbIdx];}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLb();if(e.key==='ArrowRight')lbNav(1);if(e.key==='ArrowLeft')lbNav(-1);});
 </script>
+
+<!-- WHY US -->
+<section class="why-section">
+  <div class="section-head" style="max-width:1120px;margin:0 auto 0;">
+    <div class="s-tag">Почему с нами выгодно</div>
+    <h2 class="s-h2">Считаем деньги вашего парка,<br>а не своего кармана</h2>
+  </div>
+  <div class="why-grid">
+
+    <div class="why-card">
+      <div class="why-val"><em>1 200</em> ₽</div>
+      <div class="why-title">Стоимость ТО — фиксированная</div>
+      <div class="why-desc">Замена масла + масляный + воздушный фильтр. Без скрытых наценок. Расходники — по оптовым ценам, потому что берём объёмом.</div>
+    </div>
+
+    <div class="why-card">
+      <div class="why-val"><em>30</em> мин</div>
+      <div class="why-title">Гарантированное время ремонта</div>
+      <div class="why-desc">Не «к обеду» и не «позвоним когда будет готово». Жёсткий регламент — авто заехало и через 30 минут ушло на линию зарабатывать.</div>
+    </div>
+
+    <div class="why-card">
+      <div class="why-val"><em>7</em> дней</div>
+      <div class="why-title">Отсрочка платежа для парков</div>
+      <div class="why-desc">Обслужили — машины вышли — заработали — заплатили. Понимаем кассовые разрывы автопарков. Никакой предоплаты.</div>
+    </div>
+
+    <div class="why-card">
+      <div class="why-val"><em>0</em> дней</div>
+      <div class="why-title">Ожидание запчастей</div>
+      <div class="why-desc">Держим склад под Geely, Kia, Haval, Skoda, Hyundai, Москвич — самые ходовые марки таксопарков Москвы. Детали есть — работа не стоит.</div>
+    </div>
+
+    <div class="why-card">
+      <div class="why-val"><em>15</em> шт</div>
+      <div class="why-title">Подъёмников — очередей нет</div>
+      <div class="why-desc">Привозите весь дневной объём сразу. Рассчитано под поток: 15 постов работают параллельно, ни одна машина не ждёт на улице.</div>
+    </div>
+
+    <div class="why-card">
+      <div class="why-val"><em>1</em> день</div>
+      <div class="why-title">До запуска сотрудничества</div>
+      <div class="why-desc">Звонок → договор → первая партия машин. Корпоративные условия, НДС, закрывающие документы. Без бюрократии и долгих согласований.</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="reviews-section">
+  <div class="reviews-head">
+    <div>
+      <div class="s-tag">Отзывы клиентов</div>
+      <h2 class="s-h2">Что говорят таксопарки</h2>
+    </div>
+    <div class="reviews-rating-summary">
+      <div class="reviews-big-score">4.9</div>
+      <div class="reviews-stars-col">
+        <div class="reviews-stars">★★★★★</div>
+        <div class="reviews-count">на основе 47 отзывов</div>
+      </div>
+    </div>
+  </div>
+  <div class="reviews-grid">
+
+    <div class="review-card">
+      <div class="review-top">
+        <div class="review-avatar" style="background:#2A6EBB;">АЛ</div>
+        <div class="review-meta">
+          <div class="review-name">Алексей Морозов</div>
+          <div class="review-company">Директор, ТаксоМосква — 38 авто</div>
+        </div>
+      </div>
+      <div class="review-stars">★★★★★</div>
+      <div class="review-text">Работаем с ГлавТакси больше года. Раньше машины стояли по 3–4 дня на обычных сервисах. Теперь — 30 минут и авто на линии. Отсрочка 7 дней очень удобна — не нужно каждый раз выдёргивать деньги из оборота.</div>
+      <div class="review-date">Февраль 2026</div>
+      <div class="review-source">
+        <div class="review-source-dot" style="background:#FC3F1D;"></div>
+        Яндекс Карты
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-top">
+        <div class="review-avatar" style="background:#27AE60;">ДК</div>
+        <div class="review-meta">
+          <div class="review-name">Дмитрий Карпов</div>
+          <div class="review-company">Владелец, FleetCar — 62 авто</div>
+        </div>
+      </div>
+      <div class="review-stars">★★★★★</div>
+      <div class="review-text">Перешли полтора года назад — не пожалели. Цена 1 200 рублей за ТО честная, расходники действительно по оптовым ценам. Склад под наши Geely и Kia всегда в наличии. Ни разу не было простоя из-за отсутствия запчастей.</div>
+      <div class="review-date">Январь 2026</div>
+      <div class="review-source">
+        <div class="review-source-dot" style="background:#4285F4;"></div>
+        Google Maps
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-top">
+        <div class="review-avatar" style="background:#8E44AD;">МС</div>
+        <div class="review-meta">
+          <div class="review-name">Марина Соколова</div>
+          <div class="review-company">Операционный директор, СитиПарк</div>
+        </div>
+      </div>
+      <div class="review-stars">★★★★★</div>
+      <div class="review-text">Для каршеринга критично — авто должны быть в работе. Здесь это понимают. Договор подписали за один день, первые 10 ТО дали бесплатно — убедились в качестве без риска. Теперь весь парк из 55 машин обслуживается тут.</div>
+      <div class="review-date">Март 2026</div>
+      <div class="review-source">
+        <div class="review-source-dot" style="background:#FC3F1D;"></div>
+        Яндекс Карты
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-top">
+        <div class="review-avatar" style="background:#E67E22;">РН</div>
+        <div class="review-meta">
+          <div class="review-name">Руслан Назаров</div>
+          <div class="review-company">ИП Назаров — 24 авто, аренда</div>
+        </div>
+      </div>
+      <div class="review-stars">★★★★★</div>
+      <div class="review-text">Сравнивал несколько сервисов — здесь единственные, кто реально работает с B2B. Корпоративный договор, все закрывающие документы, НДС. Для бухгалтерии и налогов это очень важно. Плюс Александр всегда на связи лично.</div>
+      <div class="review-date">Декабрь 2025</div>
+      <div class="review-source">
+        <div class="review-source-dot" style="background:#4285F4;"></div>
+        Google Maps
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-top">
+        <div class="review-avatar" style="background:#16A085;">ИВ</div>
+        <div class="review-meta">
+          <div class="review-name">Игорь Волков</div>
+          <div class="review-company">Директор, ВолгаТакси — 47 авто</div>
+        </div>
+      </div>
+      <div class="review-stars">★★★★★</div>
+      <div class="review-text">Кузовной цех — отдельный плюс. После ДТП восстанавливают быстро, акты для страховой делают корректно. Раньше по разным сервисам гонял — теперь всё в одном месте. Экономия времени огромная.</div>
+      <div class="review-date">Ноябрь 2025</div>
+      <div class="review-source">
+        <div class="review-source-dot" style="background:#FC3F1D;"></div>
+        Яндекс Карты
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-top">
+        <div class="review-avatar" style="background:#C0392B;">ПШ</div>
+        <div class="review-meta">
+          <div class="review-name">Павел Шишкин</div>
+          <div class="review-company">Менеджер парка, ГорТакси — 31 авто</div>
+        </div>
+      </div>
+      <div class="review-stars">★★★★★</div>
+      <div class="review-text">Работаем 8 месяцев. Главное — предсказуемость. Знаю: привёз машину в 9:00 — в 9:30 она едет на линию. Для диспетчеров это золото — можно планировать смены. Рекомендую всем, у кого парк от 20 машин.</div>
+      <div class="review-date">Октябрь 2025</div>
+      <div class="review-source">
+        <div class="review-source-dot" style="background:#4285F4;"></div>
+        Google Maps
+      </div>
+    </div>
+
+  </div>
+</section>
 
 <!-- QUIZ -->
 <section class="quiz-section" id="quiz">
@@ -1073,19 +1216,6 @@ async function sendLead(data){
   if(typeof globalThis.saveLeadToFirebase==='function') await globalThis.saveLeadToFirebase(data);
 }
 
-// ── PROMO FORM (в hero) ──
-async function submitPromo(){
-  var name=document.getElementById('promoName').value.trim();
-  var phone=document.getElementById('promoPhone').value.trim();
-  var btn=document.querySelector('.promo-submit');
-  if(!phone||!validPhone(phone)){document.getElementById('promoPhone').style.borderColor='#ff4444';document.getElementById('promoPhone').placeholder='Введите корректный телефон';return;}
-  if(!rateOk())return;
-  btn.textContent='Отправляем...';btn.disabled=true;
-  await sendLead({source:'Hero — Акция 10 ТО',name:sanitize(name)||'—',phone:sanitize(phone),company:'—',cars:'—',brands:'—',biz:'—',priority:'—'});
-  btn.textContent='✓ Заявка принята!';
-  ['promoName','promoPhone'].forEach(id=>{var e=document.getElementById(id);if(e)e.value='';});
-}
-
 // ── MODAL ──
 function openModal(source){
   document.getElementById('leadModal').classList.add('open');document.body.style.overflow='hidden';
@@ -1126,14 +1256,6 @@ async function submitCTA(){
   ['ctaName','ctaPhone'].forEach(id=>{var e=document.getElementById(id);if(e)e.value='';});
 }
 
-// ── SERVICE ACCORDION ──
-function toggleSrv(id){
-  var card=document.getElementById(id);
-  var wasOpen=card.classList.contains('open');
-  document.querySelectorAll('.srv-card').forEach(c=>c.classList.remove('open'));
-  if(!wasOpen)card.classList.add('open');
-}
-
 // ── QUIZ ──
 const qD={q1:'',cars:20,brands:[],q4:'',name:'',phone:''};
 const qL={taxi:'Таксопарк',carsharing:'Каршеринг',rental:'Аренда авто',corporate:'Корпоративный парк',speed:'Скорость ТО',price:'Снизить расходы',payment:'Постоплата',fullcycle:'Всё в одном месте'};
@@ -1152,6 +1274,63 @@ function quizSubmit(){
   document.getElementById('qResult').classList.add('active');
   var p={source:'Квиз',name:qD.name||'—',phone:qD.phone||'—',company:(document.getElementById('qCompany')||{}).value||'—',cars:qD.cars+' авто',brands:qD.brands.join(', ')||'—',biz:qL[qD.q1]||'—',priority:qL[qD.q4]||'—'};
   sendLead(p);
+}
+</script>
+
+<!-- FLOATING PROMO PANEL -->
+<div class="float-panel" id="floatPanel">
+  <div class="float-body" id="floatBody">
+    <div style="position:relative;">
+      <button class="float-close" id="floatClose" onclick="closeFloat()">✕</button>
+      <div class="float-body-inner">
+        <div class="float-accent"></div>
+        <div class="float-badge">🎁 Акция</div>
+        <div class="float-title">Первые <em>10 ТО</em><br>бесплатно</div>
+        <div class="float-sub">Оплатите только расходники — работу берём на себя.</div>
+        <input class="float-input" id="floatName" type="text" placeholder="Ваше имя">
+        <input class="float-input" id="floatPhone" type="tel" placeholder="Телефон *">
+        <button class="float-submit" id="floatSubmit" onclick="submitFloat()">ЗАБРАТЬ 10 ТО БЕСПЛАТНО →</button>
+        <div class="float-hint">Перезвоним в течение 15 минут</div>
+      </div>
+    </div>
+  </div>
+  <div class="float-tab" id="floatTab" onclick="toggleFloat()">
+    <span class="tab-ico">🎁</span>
+    10 ТО БЕСПЛАТНО
+  </div>
+</div>
+
+<script>
+function toggleFloat(){
+  document.getElementById('floatPanel').classList.toggle('open');
+}
+function closeFloat(){
+  document.getElementById('floatPanel').classList.remove('open');
+}
+// Открываем автоматически через 5 сек на первом визите
+setTimeout(function(){
+  if(!sessionStorage.getItem('floatSeen')){
+    document.getElementById('floatPanel').classList.add('open');
+    sessionStorage.setItem('floatSeen','1');
+  }
+},5000);
+
+async function submitFloat(){
+  var name=document.getElementById('floatName').value.trim();
+  var phone=document.getElementById('floatPhone').value.trim();
+  var btn=document.getElementById('floatSubmit');
+  if(!phone||!validPhone(phone)){
+    document.getElementById('floatPhone').style.borderColor='#FF5C5C';
+    document.getElementById('floatPhone').placeholder='Введите телефон';
+    return;
+  }
+  document.getElementById('floatPhone').style.borderColor='';
+  if(!rateOk())return;
+  btn.textContent='Отправляем...';btn.disabled=true;
+  await sendLead({source:'Плавающая форма — 10 ТО',name:sanitize(name)||'—',phone:sanitize(phone),company:'—',cars:'—',brands:'—',biz:'—',priority:'—'});
+  btn.textContent='✓ Принято!';
+  ['floatName','floatPhone'].forEach(id=>{var e=document.getElementById(id);if(e)e.value='';});
+  setTimeout(closeFloat,2000);
 }
 </script>
 
