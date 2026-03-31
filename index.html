@@ -361,7 +361,7 @@ header{
 }
 /* Мета-колонка — чисто */
 .srv-meta{
-  padding:24px 20px;
+  padding:28px 20px;
   display:flex;flex-direction:column;
   justify-content:space-between;
   align-items:flex-start;
@@ -481,6 +481,41 @@ header{
 }
 .review-source-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
 
+/* ── PAIN ── */
+.pain-section{background:var(--blk);padding:80px 40px;}
+.pain-inner{max-width:1120px;margin:0 auto;}
+.pain-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;}
+.pain-card{
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.07);
+  padding:36px 32px;
+  display:flex;flex-direction:column;gap:14px;
+  transition:.25s;
+}
+.pain-card:hover{background:rgba(245,200,66,.04);border-color:rgba(245,200,66,.15);}
+.pain-loss{
+  font-size:11px;font-weight:700;color:#ff6b6b;
+  letter-spacing:.5px;
+}
+.pain-title{
+  font-family:'Unbounded',sans-serif;
+  font-size:clamp(16px,1.6vw,20px);font-weight:900;
+  color:#fff;line-height:1.25;
+}
+.pain-accent{color:var(--y);}
+.pain-text{font-size:13px;color:rgba(255,255,255,.45);line-height:1.75;flex:1;}
+.pain-stat{
+  display:flex;align-items:center;gap:14px;
+  padding-top:16px;
+  border-top:1px solid rgba(255,255,255,.06);
+}
+.pain-stat-num{
+  font-family:'Unbounded',sans-serif;
+  font-size:24px;font-weight:900;color:var(--y);
+  white-space:nowrap;line-height:1;
+}
+.pain-stat-lbl{font-size:11px;color:rgba(255,255,255,.3);line-height:1.5;font-weight:500;}
+
 /* ── GALLERY ── */
 .gallery-section{padding:72px 40px;background:var(--dark);}
 .gallery-section .s-tag{color:var(--y);}
@@ -490,8 +525,7 @@ header{
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:3px;
-}
-.gal-item{aspect-ratio:4/3;overflow:hidden;cursor:pointer;position:relative;background:var(--blk);}
+}.gal-item{aspect-ratio:4/3;overflow:hidden;cursor:pointer;position:relative;background:var(--blk);}
 .gal-item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s ease,filter .3s;}
 .gal-item:hover img{transform:scale(1.06);filter:brightness(1.1);}
 .gal-item::after{content:'🔍';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:24px;opacity:0;background:rgba(0,0,0,.4);transition:.3s;}
@@ -586,17 +620,57 @@ header{
 .f-hint{font-size:10px;color:rgba(0,0,0,.4);text-align:center;font-weight:600;}
 
 /* ── LOCATION ── */
-.location{padding:64px 40px;background:#fff;border-top:1px solid var(--border);}
-.location-inner{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+.location{padding:0;background:#fff;border-top:1px solid var(--border);}
+.location-inner{
+  max-width:1120px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 420px;
+  min-height:420px;
+}
+.loc-left{
+  padding:56px 48px;
+  display:flex;flex-direction:column;justify-content:center;
+}
 .loc-items{display:flex;flex-direction:column;gap:16px;margin-bottom:28px;}
 .loc-item{display:flex;gap:13px;align-items:flex-start;}
 .loc-ico{width:38px;height:38px;min-width:38px;background:var(--y);border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:17px;}
 .loc-text strong{display:block;font-size:13px;font-weight:700;color:var(--blk);margin-bottom:2px;}
 .loc-text span{font-size:12px;color:var(--mut);line-height:1.5;}
-.map-placeholder{background:var(--dark);border:2px solid var(--y);height:260px;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;}
-.map-placeholder .mp{font-size:32px;}
-.map-placeholder strong{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;color:#fff;text-align:center;line-height:1.5;}
-.map-placeholder span{font-size:11px;color:rgba(255,255,255,.35);}
+/* Карта */
+.loc-map{
+  position:relative;
+  background:var(--dark);
+  display:flex;flex-direction:column;
+  border-left:1px solid var(--border);
+}
+.loc-map-inner{
+  flex:1;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:10px;padding:32px;
+  background:
+    linear-gradient(135deg, rgba(245,200,66,.04) 0%, transparent 60%),
+    var(--dark);
+}
+.loc-map-pin{font-size:40px;line-height:1;}
+.loc-map-addr{
+  font-family:'Unbounded',sans-serif;
+  font-size:13px;font-weight:700;color:#fff;
+  text-align:center;line-height:1.5;
+}
+.loc-map-city{font-size:11px;color:rgba(255,255,255,.35);text-align:center;}
+/* Кнопка маршрута */
+.loc-map-route{
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  background:var(--y);color:var(--blk);
+  padding:16px 24px;
+  font-family:'Unbounded',sans-serif;font-weight:800;font-size:12px;
+  text-decoration:none;
+  transition:.2s;
+  border-top:3px solid rgba(0,0,0,.1);
+  letter-spacing:.3px;
+}
+.loc-map-route:hover{background:var(--yd);}
+.loc-map-route svg{flex-shrink:0;}
 
 /* ── FOOTER ── */
 footer{background:var(--blk);border-top:1px solid rgba(255,255,255,.06);padding:22px 40px;display:flex;align-items:center;justify-content:space-between;gap:20px;}
@@ -663,6 +737,8 @@ footer{background:var(--blk);border-top:1px solid rgba(255,255,255,.06);padding:
   .reviews-head{flex-direction:column;align-items:flex-start;gap:16px;}
   .why-section{padding:48px 20px;}
   .reviews-section{padding:48px 20px;}
+  .pain-grid{grid-template-columns:1fr;}
+  .pain-section{padding:48px 20px;}
   .gallery-section{padding:48px 20px;}
   .gallery-grid{grid-template-columns:repeat(2,1fr);}
   .quiz-section{padding:48px 20px;}
@@ -670,8 +746,9 @@ footer{background:var(--blk);border-top:1px solid rgba(255,255,255,.06);padding:
   .quiz-options{grid-template-columns:1fr 1fr;}
   .cta-section{padding:48px 20px;}
   .cta-inner{grid-template-columns:1fr;gap:32px;}
-  .location{padding:48px 20px;}
-  .location-inner{grid-template-columns:1fr;gap:32px;}
+  .location-inner{grid-template-columns:1fr;}
+  .loc-left{padding:40px 20px 32px;}
+  .loc-map{min-height:300px;border-left:none;border-top:1px solid var(--border);}
   footer{flex-direction:column;padding:18px 20px;text-align:center;}
   .sticky-phone{display:flex;position:fixed;bottom:0;left:0;right:0;background:var(--y);padding:12px 20px;z-index:300;align-items:center;justify-content:center;gap:12px;box-shadow:0 -3px 16px rgba(0,0,0,.25);}
   .sticky-phone a{font-family:'Unbounded',sans-serif;font-size:14px;font-weight:800;color:var(--blk);text-decoration:none;}
@@ -798,6 +875,60 @@ footer{background:var(--blk);border-top:1px solid rgba(255,255,255,.06);padding:
   </div>
 </section>
 
+<!-- PAIN -->
+<section class="pain-section">
+  <div class="pain-inner">
+    <div class="section-head" style="margin-bottom:48px;">
+      <div class="s-tag" style="color:var(--y);">Узнаёте себя?</div>
+      <h2 class="s-h2" style="color:#fff;">Пока машина не на линии —<br>вы теряете деньги</h2>
+    </div>
+    <div class="pain-grid">
+
+      <div class="pain-card">
+        <div class="pain-loss">📉 Убытки каждый день</div>
+        <div class="pain-title">«Машина стоит в боксе<br>уже <span class="pain-accent">третий день</span>»</div>
+        <div class="pain-text">Сдал в сервис в понедельник — вернули в пятницу. 4 рабочих дня простоя на одну машину. При парке 20 авто это случается постоянно — и никто не считает, сколько это стоит. А стоит 3 000–5 000 ₽ в сутки с машины.</div>
+        <div class="pain-stat">
+          <span class="pain-stat-num">≈ 4 дня</span>
+          <span class="pain-stat-lbl">среднее время простоя в обычном сервисе</span>
+        </div>
+      </div>
+
+      <div class="pain-card">
+        <div class="pain-loss">💸 Переплата за объём</div>
+        <div class="pain-title">«Обслуживаем 30 машин,<br>а платим <span class="pain-accent">как физлицо</span>»</div>
+        <div class="pain-text">Обычный сервис не делает скидок за поток. Привёл 5 машин или одну — цена та же. Никакого корпоративного договора, никакой рассрочки. Просто выставили счёт — плати сейчас и сразу.</div>
+        <div class="pain-stat">
+          <span class="pain-stat-num">+30%</span>
+          <span class="pain-stat-lbl">переплата без партнёрских условий</span>
+        </div>
+      </div>
+
+      <div class="pain-card">
+        <div class="pain-loss">⏳ Непредсказуемые сроки</div>
+        <div class="pain-title">«Обещали к обеду —<br>позвонили <span class="pain-accent">вечером</span>»</div>
+        <div class="pain-text">Вы уже поставили машину на смену — а её всё ещё нет. Водитель сидит без работы, вы теряете выручку. Сервис не понимает, что для вас каждый час — это деньги.</div>
+        <div class="pain-stat">
+          <span class="pain-stat-num">× 3–5</span>
+          <span class="pain-stat-lbl">задержек в месяц у среднего парка</span>
+        </div>
+      </div>
+
+      <div class="pain-card">
+        <div class="pain-loss">🔩 Детали «под заказ»</div>
+        <div class="pain-title">«Запчасти привезут<br>через <span class="pain-accent">3–5 дней</span>»</div>
+        <div class="pain-text">Машина диагностирована — и встала. Потому что фильтра нет на складе. Под ваши марки запчастей не держат. Для сервиса это норма. Для вас — ещё несколько дней простоя без предупреждения.</div>
+        <div class="pain-stat">
+          <span class="pain-stat-num">2–5 дней</span>
+          <span class="pain-stat-lbl">ожидание запчастей «под заказ»</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
 <!-- SERVICES -->
 <section class="services" id="services">
   <div class="section-head">
@@ -883,7 +1014,7 @@ footer{background:var(--blk);border-top:1px solid rgba(255,255,255,.06);padding:
       <div class="srv-meta">
         <div>
           <div class="srv-meta-label">Диагностика</div>
-          <div class="srv-meta-val" style="font-size:22px;">Бесплатно</div>
+          <div class="srv-meta-val" style="font-size:20px;line-height:1.2;">Бесплатно</div>
           <div class="srv-meta-sub">при заказе ремонта</div>
         </div>
         <button class="srv-btn" onclick="openModal('Услуги — Слесарка')">Записаться</button>
@@ -921,6 +1052,7 @@ footer{background:var(--blk);border-top:1px solid rgba(255,255,255,.06);padding:
   </div>
 </section>
 
+
 <!-- GALLERY -->
 <section class="gallery-section" id="gallery">
   <div class="section-head centered" style="max-width:1120px;margin:0 auto 36px;">
@@ -936,6 +1068,10 @@ footer{background:var(--blk);border-top:1px solid rgba(255,255,255,.06);padding:
     <div class="gal-item" onclick="openLb(5)"><img src="https://images.unsplash.com/photo-1643701079732-3b1c7a797e3d?auto=format&fit=crop&w=600&q=80" alt="" loading="lazy"></div>
     <div class="gal-item" onclick="openLb(6)"><img src="https://images.unsplash.com/photo-1635805771545-c5d19dde76d6?auto=format&fit=crop&w=600&q=80" alt="" loading="lazy"></div>
     <div class="gal-item" onclick="openLb(7)"><img src="https://images.unsplash.com/photo-1730461747788-ced66cb36434?auto=format&fit=crop&w=600&q=80" alt="" loading="lazy"></div>
+    <div class="gal-item" onclick="openLb(8)"><img src="https://images.unsplash.com/photo-1730461749346-d75ee4d30aa1?auto=format&fit=crop&w=600&q=80" alt="" loading="lazy"></div>
+    <div class="gal-item" onclick="openLb(9)"><img src="https://images.unsplash.com/photo-1755868735286-82c86d784893?auto=format&fit=crop&w=600&q=80" alt="" loading="lazy"></div>
+    <div class="gal-item" onclick="openLb(10)"><img src="https://images.unsplash.com/photo-1761821221774-a1c2c81616d9?auto=format&fit=crop&w=600&q=80" alt="" loading="lazy"></div>
+    <div class="gal-item" onclick="openLb(11)"><img src="https://images.unsplash.com/photo-1562141961-b0e879b52a1b?auto=format&fit=crop&w=600&q=80" alt="" loading="lazy"></div>
   </div>
 </section>
 
@@ -947,7 +1083,7 @@ footer{background:var(--blk);border-top:1px solid rgba(255,255,255,.06);padding:
   <button class="lb-next" onclick="lbNav(1)">›</button>
 </div>
 <script>
-const lbSrcs=['https://images.unsplash.com/photo-1606577924006-27d39b132ae2?auto=format&fit=crop&w=1400&q=85','https://images.unsplash.com/photo-1599474151975-1f978922fa02?auto=format&fit=crop&w=1400&q=85','https://images.unsplash.com/photo-1551522435-a13afa10f103?auto=format&fit=crop&w=1400&q=85','https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&w=1400&q=85','https://images.unsplash.com/photo-1615906655593-ad0386982a0f?auto=format&fit=crop&w=1400&q=85','https://images.unsplash.com/photo-1643701079732-3b1c7a797e3d?auto=format&fit=crop&w=1400&q=85','https://images.unsplash.com/photo-1635805771545-c5d19dde76d6?auto=format&fit=crop&w=1400&q=85','https://images.unsplash.com/photo-1730461747788-ced66cb36434?auto=format&fit=crop&w=1400&q=85'];
+const lbSrcs=['https://images.unsplash.com/photo-1606577924006-27d39b132ae2?auto=format&fit=crop&w=1400&q=85','https://images.unsplash.com/photo-1599474151975-1f978922fa02?auto=format&fit=crop&w=1400&q=85','https://images.unsplash.com/photo-1551522435-a13afa10f103?auto=format&fit=crop&w=1400&q=85','https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&w=1400&q=85','https://images.unsplash.com/photo-1615906655593-ad0386982a0f?auto=format&fit=crop&w=1400&q=85','https://images.unsplash.com/photo-1643701079732-3b1c7a797e3d?auto=format&fit=crop&w=1400&q=85','https://images.unsplash.com/photo-1635805771545-c5d19dde76d6?auto=format&fit=crop&w=1400&q=85','https://images.unsplash.com/photo-1730461747788-ced66cb36434?auto=format&fit=crop&w=1400&q=85','https://images.unsplash.com/photo-1730461749346-d75ee4d30aa1?auto=format&fit=crop&w=1400&q=85','https://images.unsplash.com/photo-1755868735286-82c86d784893?auto=format&fit=crop&w=1400&q=85','https://images.unsplash.com/photo-1761821221774-a1c2c81616d9?auto=format&fit=crop&w=1400&q=85','https://images.unsplash.com/photo-1562141961-b0e879b52a1b?auto=format&fit=crop&w=1400&q=85'];
 let lbIdx=0;
 function openLb(i){lbIdx=i;document.getElementById('lb-img').src=lbSrcs[i];document.getElementById('lb').classList.add('open');document.body.style.overflow='hidden';}
 function closeLb(){document.getElementById('lb').classList.remove('open');document.body.style.overflow='';}
@@ -1137,8 +1273,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLb();if(e.key==
       <div class="quiz-step-dot active"><div class="quiz-dot-circle">1</div><div class="quiz-dot-label">Бизнес</div></div>
       <div class="quiz-step-dot"><div class="quiz-dot-circle">2</div><div class="quiz-dot-label">Парк</div></div>
       <div class="quiz-step-dot"><div class="quiz-dot-circle">3</div><div class="quiz-dot-label">Марки</div></div>
-      <div class="quiz-step-dot"><div class="quiz-dot-circle">4</div><div class="quiz-dot-label">Задача</div></div>
-      <div class="quiz-step-dot"><div class="quiz-dot-circle">5</div><div class="quiz-dot-label">Контакт</div></div>
+      <div class="quiz-step-dot"><div class="quiz-dot-circle">4</div><div class="quiz-dot-label">Контакт</div></div>
     </div>
     <div class="quiz-card">
       <div class="quiz-step active" id="qStep1">
@@ -1150,7 +1285,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLb();if(e.key==
           <div class="quiz-option" data-val="rental" onclick="quizSelect(this,'q1')"><div class="quiz-option-ico">📋</div><div class="quiz-option-text"><strong>Аренда авто</strong><span>Посуточная / долгосрочная</span></div></div>
           <div class="quiz-option" data-val="corporate" onclick="quizSelect(this,'q1')"><div class="quiz-option-ico">🏢</div><div class="quiz-option-text"><strong>Корпоративный парк</strong><span>Служебные автомобили</span></div></div>
         </div>
-        <div class="quiz-nav"><div class="quiz-step-counter">Шаг 1 из 5</div><button class="quiz-next" id="qNext1" disabled onclick="quizNext(1)">Далее →</button></div>
+        <div class="quiz-nav"><div class="quiz-step-counter">Шаг 1 из 4</div><button class="quiz-next" id="qNext1" disabled onclick="quizNext(1)">Далее →</button></div>
       </div>
       <div class="quiz-step" id="qStep2">
         <div class="quiz-q">Сколько автомобилей в парке?</div>
@@ -1159,7 +1294,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLb();if(e.key==
         <div class="quiz-range-hint" id="qRangeHint">Постоплата 15 дней · Партнёрская цена</div>
         <input type="range" class="quiz-range" id="qRange" min="3" max="200" value="20" oninput="quizRange(this.value)">
         <div class="quiz-range-ticks"><span>3–10</span><span>11–30</span><span>31–70</span><span>71–120</span><span>120+</span></div>
-        <div class="quiz-nav"><button class="quiz-back" onclick="quizBack(2)">← Назад</button><div class="quiz-step-counter">Шаг 2 из 5</div><button class="quiz-next" onclick="quizNext(2)">Далее →</button></div>
+        <div class="quiz-nav"><button class="quiz-back" onclick="quizBack(2)">← Назад</button><div class="quiz-step-counter">Шаг 2 из 4</div><button class="quiz-next" onclick="quizNext(2)">Далее →</button></div>
       </div>
       <div class="quiz-step" id="qStep3">
         <div class="quiz-q">Какие марки автомобилей?</div>
@@ -1178,26 +1313,15 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLb();if(e.key==
           <div class="quiz-checkbox" onclick="quizCheck(this,event)"><input type="checkbox"><div class="quiz-checkbox-box">✓</div><span class="quiz-checkbox-name">Lada</span></div>
           <div class="quiz-checkbox" onclick="quizCheck(this,event)"><input type="checkbox"><div class="quiz-checkbox-box">✓</div><span class="quiz-checkbox-name">Другая</span></div>
         </div>
-        <div class="quiz-nav"><button class="quiz-back" onclick="quizBack(3)">← Назад</button><div class="quiz-step-counter">Шаг 3 из 5</div><button class="quiz-next" id="qNext3" disabled onclick="quizNext(3)">Далее →</button></div>
+        <div class="quiz-nav"><button class="quiz-back" onclick="quizBack(3)">← Назад</button><div class="quiz-step-counter">Шаг 3 из 4</div><button class="quiz-next" id="qNext3" disabled onclick="quizNext(3)">Далее →</button></div>
       </div>
       <div class="quiz-step" id="qStep4">
-        <div class="quiz-q">Что для вас сейчас важнее?</div>
-        <div class="quiz-q-sub">Выберите главную задачу — сделаем акцент в предложении</div>
-        <div class="quiz-options" style="grid-template-columns:1fr 1fr;">
-          <div class="quiz-option" data-val="speed" onclick="quizSelect(this,'q4')"><div class="quiz-option-ico">⚡</div><div class="quiz-option-text"><strong>Скорость ТО</strong><span>Нужно быстро</span></div></div>
-          <div class="quiz-option" data-val="price" onclick="quizSelect(this,'q4')"><div class="quiz-option-ico">💰</div><div class="quiz-option-text"><strong>Снизить расходы</strong><span>Ищем выгоднее</span></div></div>
-          <div class="quiz-option" data-val="payment" onclick="quizSelect(this,'q4')"><div class="quiz-option-ico">📅</div><div class="quiz-option-text"><strong>Постоплата</strong><span>Не платить вперёд</span></div></div>
-          <div class="quiz-option" data-val="fullcycle" onclick="quizSelect(this,'q4')"><div class="quiz-option-ico">🏭</div><div class="quiz-option-text"><strong>Всё в одном месте</strong><span>ТО + кузов + слесарка</span></div></div>
-        </div>
-        <div class="quiz-nav"><button class="quiz-back" onclick="quizBack(4)">← Назад</button><div class="quiz-step-counter">Шаг 4 из 5</div><button class="quiz-next" id="qNext4" disabled onclick="quizNext(4)">Далее →</button></div>
-      </div>
-      <div class="quiz-step" id="qStep5">
         <div class="quiz-q">Куда отправить предложение?</div>
         <div class="quiz-q-sub">Подготовим КП под ваши ответы и пришлём в течение 1 часа</div>
         <input class="quiz-input" type="text" id="qName" placeholder="Ваше имя" oninput="quizCheckContact()">
         <input class="quiz-input" type="tel" id="qPhone" placeholder="Телефон (+7...)" oninput="quizCheckContact()">
         <input class="quiz-input" type="text" id="qCompany" placeholder="Название компании (необязательно)">
-        <div class="quiz-nav"><button class="quiz-back" onclick="quizBack(5)">← Назад</button><div class="quiz-step-counter">Шаг 5 из 5</div><button class="quiz-next" id="qNext5" disabled onclick="quizSubmit()">🎁 Получить КП</button></div>
+        <div class="quiz-nav"><button class="quiz-back" onclick="quizBack(4)">← Назад</button><div class="quiz-step-counter">Шаг 4 из 4</div><button class="quiz-next" id="qNext5" disabled onclick="quizSubmit()">🎁 Получить КП</button></div>
       </div>
       <div class="quiz-result" id="qResult">
         <div class="quiz-result-ico">✅</div>
@@ -1230,7 +1354,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLb();if(e.key==
 <!-- LOCATION -->
 <section class="location" id="location">
   <div class="location-inner">
-    <div>
+    <div class="loc-left">
       <div class="s-tag">Как нас найти</div>
       <h2 class="s-h2" style="margin-bottom:24px">Удобный заезд<br>прямо с СВХ</h2>
       <div class="loc-items">
@@ -1241,10 +1365,16 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLb();if(e.key==
       </div>
       <button class="btn-primary" style="display:inline-flex;padding:13px 26px;font-size:12px;" onclick="openModal('Локация — Оставить заявку')">Оставить заявку</button>
     </div>
-    <div class="map-placeholder">
-      <div class="mp">📍</div>
-      <strong>1-я ул. Измайловского Зверинца, 8</strong>
-      <span>Москва · Рядом с СВХ</span>
+    <div class="loc-map">
+      <div class="loc-map-inner">
+        <div class="loc-map-pin">📍</div>
+        <div class="loc-map-addr">1-я ул. Измайловского Зверинца, 8</div>
+        <div class="loc-map-city">Москва · Рядом с СВХ</div>
+      </div>
+      <a class="loc-map-route" href="https://yandex.ru/maps/?rtext=~55.774813,37.746382&rtt=auto" target="_blank">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="currentColor"/></svg>
+        Построить маршрут
+      </a>
     </div>
   </div>
 </section>
